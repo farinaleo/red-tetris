@@ -10,9 +10,9 @@ const socketMiddleware = (store) => {
 
     }
     return (next) => (action) => {
-        switch (action.type) {
-            ...
-        }
+        // switch (action.type) {
+        //     ...
+        // }
         return next(action);
     };
 };

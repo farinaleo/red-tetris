@@ -3,9 +3,9 @@ const initialState = {
 };
 
 const chatReducer = (state = initialState, action) => {
-    switch (action.type) {
-        ...
-    }
+    // switch (action.type) {
+    //     ...
+    // }
 };
 
 export default chatReducer;
