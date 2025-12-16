@@ -2,11 +2,14 @@
 import React from 'react';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import Game from './components/Game.jsx'
+import './App.css'
 
-function App() {
+const App = () => {
     return (
         <div className="App">
-            <ToastContainer />
+            <Game />
+            {/*<ToastContainer />*/}
         </div>
     );
 }
