@@ -1,0 +1,21 @@
+.board-container {
+    display: flex;
+    flex-wrap: wrap;
+    /*min-height: 50%;*/
+    max-width: 100%;
+    max-height: 100%;
+    aspect-ratio: 1 / 2;
+    box-sizing: border-box;
+}
+.tile {
+    width: 10%;
+    aspect-ratio: 1 / 1; /* Ratio 1:1 pour un carré */
+    box-sizing: border-box;
+    color: lightpink;
+}
+.white {
+    background-color: white;
+}
+.gray {
+    background-color: black;
+}

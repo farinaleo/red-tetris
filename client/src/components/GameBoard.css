@@ -1,8 +1,33 @@
 div.game-board-container {
     width: 30%;
     height: 100%;
-    /*margin: 2rem auto;*/
-    padding: 1.5rem;
-    border-radius: 12px;
+    /*padding: 1.5rem;*/
+    border-radius: 50px 0 50px 0;
     background-color: gray;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    box-sizing: border-box;
+}
+
+div.game-board-header {
+    width: 100%;
+    height: 20%;
+    background-color: antiquewhite;
+    box-sizing: border-box;
+}
+
+div.game-board-main {
+    width: 100%;
+    height: 80%;
+    background-color: aquamarine;
+    display: flex;
+    justify-content: center;
+    box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+    div.game-board-container {
+        width: 100%;
+    }
 }

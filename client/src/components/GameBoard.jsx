@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import './GameBoard.css';
+import Board from './Board.jsx'
 
 const GameBoard = () => {
     // const dispatch = useDispatch();
@@ -22,8 +23,8 @@ const GameBoard = () => {
             <div className="game-board-header">
                 <p>coucou header</p>
             </div>
-            <div className="game-board-game">
-                <p>coucou jeu</p>
+            <div className="game-board-main">
+                <Board />
             </div>
         </div>
     );
