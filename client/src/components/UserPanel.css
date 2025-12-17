@@ -2,7 +2,7 @@ div.user-panel-container {
     width: 60%;
     height: 100%;
     /*padding: 1.5rem;*/
-    background-color: lightgray;
+    /*background-color: lightgray;*/
     display: flex;
     flex-direction: column;
     gap: 10px;

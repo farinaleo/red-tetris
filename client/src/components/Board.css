@@ -1,21 +1,28 @@
 .board-container {
     display: flex;
     flex-wrap: wrap;
-    /*min-height: 50%;*/
     max-width: 100%;
     max-height: 100%;
     aspect-ratio: 1 / 2;
     box-sizing: border-box;
 }
+
 .tile {
     width: 10%;
-    aspect-ratio: 1 / 1; /* Ratio 1:1 pour un carré */
+    aspect-ratio: 1 / 1;
     box-sizing: border-box;
     color: lightpink;
+    /*border: 0.5px solid black;*/
+    /*border-radius: 3px;*/
 }
-.white {
-    background-color: white;
+
+.light-gray {
+    background-color: #FBFBF9;
 }
 .gray {
-    background-color: black;
+    background-color: #D9D9D9;
+}
+
+.spectrum-gray {
+    background-color: #9D9D9D;
 }

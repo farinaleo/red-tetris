@@ -1,0 +1,31 @@
+div.next-piece-container {
+    width: 50%;
+    height: 100%;
+    background-color: #FBFBF9;
+    padding: 10px;
+    display: flex;
+    justify-content: center;
+    box-sizing: border-box;
+    border-radius: 10px;
+}
+
+.piece {
+    display: flex;
+    flex-wrap: wrap;
+    max-width: 100%;
+    max-height: 100%;
+    aspect-ratio: 1 / 1;
+    box-sizing: border-box;
+}
+.next-piece-tile {
+    width: 25%;
+    aspect-ratio: 1 / 1;
+    box-sizing: border-box;
+    color: lightpink;
+}
+.next-piece-white {
+    background-color: white;
+}
+.next-piece-gray {
+    background-color: black;
+}
