@@ -9,7 +9,7 @@ const App = () => {
     return (
         <div className="app">
             <Game />
-            {/*<ToastContainer />*/}
+            <ToastContainer />
         </div>
     );
 }

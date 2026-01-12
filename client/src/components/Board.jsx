@@ -26,7 +26,6 @@ const Board = ({boardElements, isSpectrum=false}) => {
 
 
     const getClassName = (element, index) => {
-        console.log(Colors[element]);
         if (element === 0) {
             return getBgClassName(index);
         }

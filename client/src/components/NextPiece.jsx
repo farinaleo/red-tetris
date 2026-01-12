@@ -8,11 +8,9 @@ import Colors from '../types/enums/colors.jsx';
 const NextPiece = ({pieceName}) => {
     const piece = Pieces[pieceName];
     useEffect(() => {
-        console.log(piece);
     }, []);
 
     const getClassName = (element) => {
-        console.log(Colors[element]);
         return `next-piece-tile ${Colors[element]}`;
     };
 

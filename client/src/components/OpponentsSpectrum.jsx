@@ -7,8 +7,8 @@ const OpponentsSpectrum = ({opponents}) => {
 
     return (
         <div className="opponents-spectrum-container">
-            {opponents.map(([username, boardElements]) => (
-                <Spectrum username={username} boardElements={boardElements}/>
+            {opponents.map(([username, boardElements], index) => (
+                <Spectrum key={index} username={username} boardElements={boardElements}/>
             ))}
         </div>
     );
