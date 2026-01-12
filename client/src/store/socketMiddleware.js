@@ -21,6 +21,14 @@ const socketMiddleware = (store) => {
                 progress: undefined,
             });
         });
+
+        socket.on('update_users', (users) => {
+            socketStore.dispatch({
+                type: 'UPDATE_USERS',
+                payload: users || [],
+            });
+            console.log(users);
+        });
     }
 
     return (next) => (action) => {

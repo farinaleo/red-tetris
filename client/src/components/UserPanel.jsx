@@ -6,6 +6,9 @@ import Rules from "./Rules.jsx";
 
 const UserPanel = () => {
 
+    const dispatch = useDispatch();
+    const {username, users = [] } = useSelector((state) => state.game);
+
     const elems = [
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -29,13 +32,18 @@ const UserPanel = () => {
         1, 1, 1, 1, 2, 2, 0, 0, 0, 0,
     ]
 
-    const opponents = [
-        ["username", elems],
-        ["adsad", elems],
-        ["wqeqwe", elems],
-        ["qwwww", elems],
-        ["4234", elems],
-    ];
+    // const opponents = [
+    //     ["username", elems],
+    //     ["adsad", elems],
+    //     ["wqeqwe", elems],
+    //     ["qwwww", elems],
+    //     ["4234", elems],
+    // ];
+
+    const opponents = users
+        .filter((user) => user.username !== username)
+        .map((user) => [user.username, elems]);
+
 
     return (
         <div className="user-panel-container">

@@ -9,7 +9,7 @@ import TopBar from './TopBar.jsx';
 const Game = () => {
 
     const dispatch = useDispatch();
-    const { roomName, username } = useSelector((state) => state.chat);
+    const { roomName, username } = useSelector((state) => state.game);
 
     useEffect(() => {
         // Récupérer le chemin depuis l'URL

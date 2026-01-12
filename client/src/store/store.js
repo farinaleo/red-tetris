@@ -1,11 +1,11 @@
 // client/src/store/store.js
 import { configureStore } from '@reduxjs/toolkit';
-import chatReducer from './reducers';
+import gameReducer from './reducers';
 import socketMiddleware from './socketMiddleware';
 
 export const store = configureStore({
     reducer: {
-        chat: chatReducer,
+        game: gameReducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware().concat(socketMiddleware),

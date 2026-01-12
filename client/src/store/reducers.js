@@ -2,9 +2,10 @@
 const initialState = {
     roomName: 'general',
     username: 'anonymous',
+    users: []
 };
 
-const chatReducer = (state = initialState, action) => {
+const gameReducer = (state = initialState, action) => {
     switch (action.type) {
         case 'JOIN_ROOM':
             return {
@@ -12,9 +13,14 @@ const chatReducer = (state = initialState, action) => {
                 roomName: action.payload.roomName,
                 username: action.payload.username,
             };
+        case 'UPDATE_USERS':
+            return {
+                ...state,
+                users: action.payload,
+            }
         default:
             return state;
     }
 };
 
-export default chatReducer;
+export default gameReducer;
