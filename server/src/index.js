@@ -1,3 +1,5 @@
+const {Game} = require('./game/Game.js');
+const {User} = require('./game/User.js');
 const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io');
@@ -12,40 +14,41 @@ const io = socketIo(server, {
     }
 });
 
-const userSockets = new Map();
+const games = new Map();
 
-
-// Servir les fichiers statiques de la SPA
 app.use(express.static(path.join(__dirname, '../client/public')));
 
-
-
-// Gérer les routes dynamiques pour les salles de chat
 app.get(['/', '/home'], (req, res) => {
     res.sendFile(path.join(__dirname, '../client/public', 'index.html'));
 });
 
-
-
 io.on('connection', (socket) => {
-    console.log('Un utilisateur s\'est connecté');
-    const userId = socket.handshake.query.userId;
-    userSockets.set(userId, socket.id);
+    console.log('Say hi to a new user !!');
 
     socket.on('join', ({ roomName, username }) => {
-        socket.join(roomName);
-        console.log(roomName + ' new user : ' + username);
-        // io.to(roomName).emit('report_error', "test error");
 
-        const socketId = userSockets.get(userId);
-        if (socketId) {
-            io.to(socketId).emit('report_error', { message: "test error " + username});
+        if (!games.has(roomName)) {
+            games.set(roomName, new Game(roomName));
         }
+
+        const currentGame = games.get(roomName);
+        const user = new User(username, socket.id);
+        currentGame.addUser(user);
+        socket.join(roomName);
+
+        console.log(roomName + ' new user : ' + username);
+        io.to(socket.id).emit('report_error', {message : "test error"});
+        currentGame.sendUpdatedUsersList(io);
+
     });
 
     socket.on('disconnect', () => {
-        console.log('Un utilisateur s\'est déconnecté');
-        userSockets.delete(userId);
+        games.forEach((game, roomName) => {
+            game.removeUser(socket.id);
+            game.sendUpdatedUsersList(io);
+            console.log('Bye bye user see yoo later in ' + roomName);
+        });
+
     });
 });
 
