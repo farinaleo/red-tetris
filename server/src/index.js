@@ -12,7 +12,8 @@ const io = socketIo(server, {
     }
 });
 
-const chatRooms = new Map();
+const userSockets = new Map();
+
 
 // Servir les fichiers statiques de la SPA
 app.use(express.static(path.join(__dirname, '../client/public')));
@@ -28,13 +29,23 @@ app.get(['/', '/home'], (req, res) => {
 
 io.on('connection', (socket) => {
     console.log('Un utilisateur s\'est connecté');
+    const userId = socket.handshake.query.userId;
+    userSockets.set(userId, socket.id);
 
-    socket.on('join', ({ channel }) => {
-        socket.join(channel);
+    socket.on('join', ({ roomName, username }) => {
+        socket.join(roomName);
+        console.log(roomName + ' new user : ' + username);
+        // io.to(roomName).emit('report_error', "test error");
+
+        const socketId = userSockets.get(userId);
+        if (socketId) {
+            io.to(socketId).emit('report_error', { message: "test error " + username});
+        }
     });
 
     socket.on('disconnect', () => {
         console.log('Un utilisateur s\'est déconnecté');
+        userSockets.delete(userId);
     });
 });
 
