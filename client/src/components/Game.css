@@ -1,6 +1,17 @@
-.wrapper {
+.window-wrapper {
     width: 100%;
     height: 100%;
+    background-color: #FBFBF9;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    box-sizing: border-box;
+    font-family: 'circular';
+}
+
+.game-wrapper {
+    width: 100%;
+    height: 95%;
     padding: 10px;
     background-color: #FBFBF9;
     display: flex;
@@ -12,7 +23,7 @@
 }
 
 @media (aspect-ratio: 768px) {
-    .wrapper {
+    .game-wrapper {
         display: flex;
         flex-direction: column;
         gap: 10px;
