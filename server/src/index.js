@@ -1,5 +1,5 @@
 const {Game} = require('./game/Game.js');
-const {User} = require('./game/User.js');
+const {Player} = require('./game/Player.js');
 const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io');
@@ -26,26 +26,27 @@ io.on('connection', (socket) => {
     console.log('Say hi to a new user !!');
 
     socket.on('join', ({ roomName, username }) => {
+        console.log(username + ' ask to join ' + roomName);
 
         if (!games.has(roomName)) {
             games.set(roomName, new Game(roomName));
         }
 
         const currentGame = games.get(roomName);
-        const user = new User(username, socket.id);
-        currentGame.addUser(user);
+        const player = new Player(username, socket.id);
+        currentGame.addPlayer(player);
         socket.join(roomName);
 
         console.log(roomName + ' new user : ' + username);
         io.to(socket.id).emit('report_error', {message : "test error"});
-        currentGame.sendUpdatedUsersList(io);
+        currentGame.sendUpdatedPlayersList(io);
 
     });
 
     socket.on('disconnect', () => {
         games.forEach((game, roomName) => {
-            game.removeUser(socket.id);
-            game.sendUpdatedUsersList(io);
+            game.removePlayer(socket.id);
+            game.sendUpdatedPlayersList(io);
             console.log('Bye bye user see yoo later in ' + roomName);
         });
 

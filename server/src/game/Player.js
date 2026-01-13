@@ -1,4 +1,4 @@
-class User {
+class Player {
     constructor(username, socketId) {
         this.username = username;
         this.socketId = socketId;
@@ -10,4 +10,4 @@ class User {
     }
 }
 
-module.exports = {User};
+module.exports = {Player};

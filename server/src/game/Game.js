@@ -1,23 +1,35 @@
-const {User} =require('./User.js');
+const {Player} =require('./Player.js');
 class Game {
     constructor(roomName) {
         this.roomName = roomName;
-        this.users = [];
-        this.master = null;
+        this.players = [];
     }
 
-    addUser(user) {
-        this.users.push(user);
-        console.log(this.users);
+    addPlayer(player) {
+        this.players.push(player);
+        console.log(this.players);
+        this.promoteAMasterIfMissing();
     }
 
-    removeUser(socketId) {
-        this.users = this.users.filter(u => u.socketId !== socketId);
-        console.log('by by user');
+    removePlayer(socketId) {
+        this.players = this.players.filter(player => player.socketId !== socketId);
+        console.log('by by player');
+        this.promoteAMasterIfMissing();
     }
 
-    sendUpdatedUsersList(io) {
-        io.to(this.roomName).emit('update_users', this.users)
+    sendUpdatedPlayersList(io) {
+        io.to(this.roomName).emit('update_players', this.players)
+    }
+
+    promoteAMasterIfMissing() {
+        const masters = this.players.filter(player => player.isMaster);
+        if (!(Array.isArray(masters) && masters.length !== 0)) {
+            if (Array.isArray(this.players) && this.players.length !==0) {
+                const firstPlayer = this.players[0];
+                firstPlayer.switchMasterStatus(true);
+            }
+        }
+        console.log(this.players);
     }
 
 }
