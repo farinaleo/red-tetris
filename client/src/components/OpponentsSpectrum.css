@@ -8,4 +8,5 @@ div.opponents-spectrum-container {
     gap: 1.25%;
     box-sizing: border-box;
     border-radius: 20px;
+    overflow: auto;
 }
