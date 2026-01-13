@@ -20,7 +20,6 @@ div.master-button-container {
     overflow: hidden;
     transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     outline: none;
-    box-shadow: 0 6px 12px rgba(255, 82, 82, 0.2);
     z-index: 1;
     user-select: none;
     -webkit-tap-highlight-color: transparent;
@@ -28,5 +27,4 @@ div.master-button-container {
 
 .master-button:active {
     transform: scale(0.95);
-    box-shadow: 0 3px 6px rgba(255, 82, 82, 0.1);
 }
