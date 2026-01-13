@@ -6,21 +6,8 @@ import NextPiece from './NextPiece.jsx'
 import GameStatus from '../types/enums/gameStatus.jsx'
 
 const GameBoard = () => {
-    // const dispatch = useDispatch();
-    // const { roomName, messages, username } = useSelector((state) => state.chat);
-
-    // useEffect(() => {
-    //     console.log('loaded gameboard');
-    //
-    //     return () => {
-    //     };
-    // }, []);
-    //
-    // const handleSendMessage = (message) => {
-    //     dispatch(sendMessage(roomName, message, username));
-    // };
-
-    // const elems = Array.from({ length: 200 }, (_, index) => 1);
+    const dispatch = useDispatch();
+    const { game_status } = useSelector((state) => state.game);
 
     const elems = [
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -50,7 +37,7 @@ const GameBoard = () => {
         <div className="game-board-container">
             <div className="game-board-header">
                 <div className="game-board-status">
-                    {GameStatus["WAITING"]}
+                    {game_status}
                     coucou
                 </div>
                 <NextPiece pieceName={"Z"} />

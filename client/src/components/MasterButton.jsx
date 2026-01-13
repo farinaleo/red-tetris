@@ -1,11 +1,16 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import './MasterButton.css';
+import { StartGame } from '../store/actions';
 
 const MasterButton = () => {
 
+    const dispatch = useDispatch();
+    const { roomName, username } = useSelector((state) => state.game);
+
     const clickEvent = () => {
       console.log("CLICK");
+      dispatch(StartGame(roomName));
     };
 
     return (

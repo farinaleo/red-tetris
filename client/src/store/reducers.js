@@ -2,7 +2,8 @@
 const initialState = {
     roomName: 'general',
     username: 'anonymous',
-    players: []
+    players: [],
+    game_status: '',
 };
 
 const gameReducer = (state = initialState, action) => {
@@ -17,7 +18,12 @@ const gameReducer = (state = initialState, action) => {
             return {
                 ...state,
                 players: action.payload,
-            }
+            };
+        case 'GAME_STATUS':
+            return {
+                ...state,
+                game_status:action.payload.status,
+            };
         default:
             return state;
     }

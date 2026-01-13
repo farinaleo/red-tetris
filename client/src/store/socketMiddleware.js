@@ -11,7 +11,7 @@ const socketMiddleware = (store) => {
 
         // handle error with a notification
         socket.on('report_error', (data) => {
-            toast.info(`Error: ${data.message}`, {
+            toast.error(`${data.topic}: ${data.message}`, {
                 position: "top-right",
                 autoClose: 5000,
                 hideProgressBar: false,
@@ -29,12 +29,23 @@ const socketMiddleware = (store) => {
             });
             console.log(players);
         });
+
+        socket.on('game_status', (data) => {
+            console.log(data);
+           socketStore.dispatch({
+              type: 'GAME_STATUS',
+              payload: data,
+           });
+        });
     }
 
     return (next) => (action) => {
         switch (action.type) {
             case 'JOIN_ROOM':
                 socket.emit('join', action.payload);
+                break;
+            case 'START_GAME':
+                socket.emit('start_game', action.payload);
                 break;
             default:
                 break;
