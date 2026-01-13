@@ -22,17 +22,16 @@ const socketMiddleware = (store) => {
             });
         });
 
-        socket.on('update_users', (users) => {
+        socket.on('update_players', (players) => {
             socketStore.dispatch({
-                type: 'UPDATE_USERS',
-                payload: users || [],
+                type: 'UPDATE_PLAYERS',
+                payload: players || [],
             });
-            console.log(users);
+            console.log(players);
         });
     }
 
     return (next) => (action) => {
-        socket.off("report-error");
         switch (action.type) {
             case 'JOIN_ROOM':
                 socket.emit('join', action.payload);

@@ -1,0 +1,32 @@
+div.master-button-container {
+    width: 100%;
+    height: auto;
+    /*padding: 1.5rem;*/
+    box-sizing: border-box;
+}
+
+.master-button {
+    position: relative;
+    background-color: #FF2F2F;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    font-size: 18px;
+    font-family: 'circular';
+    font-weight: 600;
+    letter-spacing: 2px;
+    border-radius: 15px;
+    cursor: pointer;
+    overflow: hidden;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    outline: none;
+    box-shadow: 0 6px 12px rgba(255, 82, 82, 0.2);
+    z-index: 1;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.master-button:active {
+    transform: scale(0.95);
+    box-shadow: 0 3px 6px rgba(255, 82, 82, 0.1);
+}
