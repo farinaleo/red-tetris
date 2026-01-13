@@ -1,8 +1,10 @@
 const {Player} =require('./Player.js');
+const {GameStatus} = require('../enums/GameStatus.js')
 class Game {
     constructor(roomName) {
         this.roomName = roomName;
         this.players = [];
+        this.status = GameStatus.WAITING;
     }
 
     addPlayer(player) {
@@ -21,6 +23,10 @@ class Game {
         io.to(this.roomName).emit('update_players', this.players)
     }
 
+    sendGameStatus(io) {
+        io.to(this.roomName).emit('game_status', {status:this.status})
+    }
+
     promoteAMasterIfMissing() {
         const masters = this.players.filter(player => player.isMaster);
         if (!(Array.isArray(masters) && masters.length !== 0)) {
@@ -30,6 +36,20 @@ class Game {
             }
         }
         console.log(this.players);
+    }
+
+    isMaster(socketId) {
+        const player = this.players.find(player => player.socketId === socketId);
+        return (player.isMaster);
+    }
+
+    launchGame() {
+        if (this.status === GameStatus.WAITING) {
+            this.status = GameStatus.STARTED;
+            return true;
+        } else {
+            return false;
+        }
     }
 
 }

@@ -22,6 +22,10 @@ app.get(['/', '/home'], (req, res) => {
     res.sendFile(path.join(__dirname, '../client/public', 'index.html'));
 });
 
+function sendErrorNotification(io, roomName, topic, message) {
+    io.to(roomName).emit('report_error', {topic:topic, message:message});
+}
+
 io.on('connection', (socket) => {
     console.log('Say hi to a new user !!');
 
@@ -38,8 +42,9 @@ io.on('connection', (socket) => {
         socket.join(roomName);
 
         console.log(roomName + ' new user : ' + username);
-        io.to(socket.id).emit('report_error', {message : "test error"});
+        sendErrorNotification(io, socket.id, 'test', 'test error 1 2 1 2')
         currentGame.sendUpdatedPlayersList(io);
+        currentGame.sendGameStatus(io);
 
     });
 
@@ -51,6 +56,24 @@ io.on('connection', (socket) => {
         });
 
     });
+
+    socket.on('start_game', ({roomName}) => {
+       console.log(socket.id + ' try to launch game ' + roomName);
+       if (games.has(roomName)) {
+           const currentGame = games.get(roomName);
+           if (currentGame.isMaster(socket.id)) {
+                const isGameLaunched = currentGame.launchGame();
+                if (!isGameLaunched) {
+                    sendErrorNotification(io, socket.id, 'Game Status', 'Game running.');
+                } else {
+                    currentGame.sendGameStatus(io);
+                }
+           } else {
+               sendErrorNotification(io, socket.id, 'Player status', 'you are not the master.')
+           }
+       }
+    });
+
 });
 
 
