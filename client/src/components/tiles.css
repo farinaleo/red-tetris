@@ -1,0 +1,35 @@
+.void-tile {
+    /*background-color: antiquewhite;*/
+}
+
+.o-tile {
+    background-color: #FFEE2F;
+}
+
+.i-tile {
+    background-color: #2F9AFF;
+}
+
+.t-tile {
+    background-color: #932FFF;
+}
+
+.l-tile {
+    background-color: #FF9E2F;
+}
+
+.s-tile {
+    background-color: #A8FF2F;
+}
+
+.j-tile {
+    background-color: #2F40FF;
+}
+
+.z-tile {
+    background-color: #FF2F2F;
+}
+
+.block-tile {
+    background-color: #D9D9D9;
+}
