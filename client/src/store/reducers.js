@@ -4,6 +4,7 @@ const initialState = {
     username: 'anonymous',
     players: [],
     game_status: '',
+    next_piece: 'Z',
 };
 
 const gameReducer = (state = initialState, action) => {
@@ -24,6 +25,11 @@ const gameReducer = (state = initialState, action) => {
                 ...state,
                 game_status:action.payload.status,
             };
+        case 'NEXT_PIECE':
+            return {
+                ...state,
+                next_piece:action.payload.piece.type,
+            }
         default:
             return state;
     }

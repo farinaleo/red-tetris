@@ -37,6 +37,14 @@ const socketMiddleware = (store) => {
               payload: data,
            });
         });
+
+        socket.on('next_piece', (data) => {
+            console.log(data);
+           socketStore.dispatch({
+              type: 'NEXT_PIECE',
+              payload: data,
+           });
+        });
     }
 
     return (next) => (action) => {

@@ -7,7 +7,7 @@ import GameStatus from '../types/enums/gameStatus.jsx'
 
 const GameBoard = () => {
     const dispatch = useDispatch();
-    const { game_status } = useSelector((state) => state.game);
+    const { game_status, next_piece } = useSelector((state) => state.game);
 
     const elems = [
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -52,7 +52,7 @@ const GameBoard = () => {
                 <div className={getGameStatusCss(game_status)}>
                     <h2>{game_status}</h2>
                 </div>
-                <NextPiece pieceName={"Z"} />
+                <NextPiece pieceName={next_piece} />
             </div>
             <div className="game-board-main">
                 <Board boardElements={elems}/>
