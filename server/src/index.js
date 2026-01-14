@@ -70,7 +70,7 @@ io.on('connection', (socket) => {
             console.log('Bye bye user see yoo later in ' + roomName);
 
             if (game.players.length === 0) {
-                games.delete(roomName);
+                 games.delete(roomName);
                 console.log(`Room ${roomName} has been removed as it is now empty.`);
             }
         });

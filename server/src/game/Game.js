@@ -73,6 +73,9 @@ class Game {
                         this.pieceIndex = 0;
                         clearInterval(this.gameInterval);
                     }
+                    this.players.forEach((player) => {
+                        player.sendCurrentBoard(io);
+                    });
                 }
             }, 3000);
     }
