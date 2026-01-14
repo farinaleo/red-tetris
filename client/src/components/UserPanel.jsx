@@ -35,7 +35,7 @@ const UserPanel = () => {
 
     const opponents = players
         .filter((player) => player.username !== username)
-        .map((player) => [player.username, elems]);
+        .map((player) => [player.username, player.board]);
 
     const currentPlayer = players.find(player => player.username === username);
     console.log(currentPlayer);
