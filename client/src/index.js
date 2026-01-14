@@ -6,6 +6,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import gameReducer from './store/reducers';
 import socketMiddleware from './store/socketMiddleware';
 import App from './App';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 const store = configureStore({
     reducer: {
@@ -15,27 +16,15 @@ const store = configureStore({
         getDefaultMiddleware().concat(socketMiddleware),
 });
 
-
-import { BrowserRouter as Router, Routes, Route, Navigate, useParams } from 'react-router-dom';
-
 const root = ReactDOM.createRoot(document.getElementById('root'));
-
-const AppRoutes = () => {
-    return (
-        <Routes>
-            <Route path="/home" element={
-                <Provider store={store}>
-                    <App />
-                </Provider>
-            } />
-        </Routes>
-    );
-};
 
 root.render(
     <Router>
         <Provider store={store}>
-            <App />
+            <Routes>
+                <Route path="/" element={<App />} />
+                <Route path="/:roomName/:username" element={<App />} />
+            </Routes>
         </Provider>
     </Router>
 );
