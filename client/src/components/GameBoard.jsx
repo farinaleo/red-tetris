@@ -7,30 +7,7 @@ import GameStatus from '../types/enums/gameStatus.jsx'
 
 const GameBoard = () => {
     const dispatch = useDispatch();
-    const { game_status, next_piece } = useSelector((state) => state.game);
-
-    const elems = [
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 3, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 3, 3, 0, 0, 0, 0, 0,
-        0, 0, 0, 3, 2, 2, 0, 0, 0, 0,
-        1, 1, 1, 1, 2, 2, 0, 0, 0, 0,
-    ]
+    const { game_status, next_piece, current_board } = useSelector((state) => state.game);
 
     const getGameStatusCss = (gameStatus) => {
         if (gameStatus === 'WAITING') {
@@ -55,7 +32,7 @@ const GameBoard = () => {
                 <NextPiece pieceName={next_piece} />
             </div>
             <div className="game-board-main">
-                <Board boardElements={elems}/>
+                <Board boardElements={current_board}/>
             </div>
         </div>
     );

@@ -61,6 +61,14 @@ const socketMiddleware = (navigate) => {
                     payload: data,
                 });
             });
+
+            socket.on('current_board', (data) => {
+               console.log(data);
+               socketStore.dispatch({
+                   type: 'CURRENT_BOARD',
+                   payload: data,
+               });
+            });
         }
 
         switch (action.type) {

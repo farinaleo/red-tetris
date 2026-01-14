@@ -5,6 +5,7 @@ const initialState = {
     players: [],
     game_status: '',
     next_piece: 'Z',
+    current_board: Array.from({ length: 10 * 20 }, (_, index) => 0),
 };
 
 const gameReducer = (state = initialState, action) => {
@@ -29,6 +30,11 @@ const gameReducer = (state = initialState, action) => {
             return {
                 ...state,
                 next_piece:action.payload.piece.type,
+            }
+        case 'CURRENT_BOARD':
+            return {
+                ...state,
+                current_board: action.payload.board,
             }
         default:
             return state;
