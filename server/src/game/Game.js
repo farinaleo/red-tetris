@@ -17,6 +17,11 @@ class Game {
         this.promoteAMasterIfMissing();
     }
 
+    usernameExists(username) {
+        const players = this.players.filter(player => player.username === username);
+        return (players.length !== 0);
+    }
+
     removePlayer(socketId) {
         this.players = this.players.filter(player => player.socketId !== socketId);
         console.log('by by player');

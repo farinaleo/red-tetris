@@ -1,5 +1,6 @@
 const {Game} = require('./game/Game.js');
 const {Player} = require('./game/Player.js');
+const {GameStatus} = require('./enums/GameStatus.js');
 const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io');
@@ -23,7 +24,11 @@ app.get(['/', '/home'], (req, res) => {
 });
 
 function sendErrorNotification(io, roomName, topic, message) {
-    io.to(roomName).emit('report_error', {topic:topic, message:message});
+    io.to(roomName).emit('notify_error', {topic:topic, message:message});
+}
+
+function sendErrorRedirection(io, roomName, topic, message) {
+    io.to(roomName).emit('redirect_error', {topic:topic, message:message});
 }
 
 io.on('connection', (socket) => {
@@ -37,15 +42,25 @@ io.on('connection', (socket) => {
         }
 
         const currentGame = games.get(roomName);
-        const player = new Player(username, socket.id);
-        currentGame.addPlayer(player);
-        socket.join(roomName);
 
-        console.log(roomName + ' new user : ' + username);
-        sendErrorNotification(io, socket.id, 'test', 'test error 1 2 1 2')
-        currentGame.sendUpdatedPlayersList(io);
-        currentGame.sendGameStatus(io);
+        if (currentGame.usernameExists(username)) {
+            console.log('error redirect username used');
+            sendErrorRedirection(io, socket.id, 'Username', 'Username already used.');
+            return ;
+        } else if (currentGame.status === GameStatus.STARTED) {
+            console.log('error game started...');
+            sendErrorRedirection(io, socket.id, 'Game', 'Can t join, a game is running.');
+            return ;
+        } else {
+            const player = new Player(username, socket.id);
+            currentGame.addPlayer(player);
+            socket.join(roomName);
 
+            console.log(roomName + ' new user : ' + username);
+            sendErrorNotification(io, socket.id, 'test', 'test error 1 2 1 2')
+            currentGame.sendUpdatedPlayersList(io);
+            currentGame.sendGameStatus(io);
+        }
     });
 
     socket.on('disconnect', () => {
