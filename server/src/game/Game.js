@@ -1,10 +1,14 @@
-const {Player} =require('./Player.js');
-const {GameStatus} = require('../enums/GameStatus.js')
+const {Player} = require('./Player.js');
+const {Piece} = require('./Piece.js');
+const {GameStatus} = require('../enums/GameStatus.js');
 class Game {
     constructor(roomName) {
         this.roomName = roomName;
         this.players = [];
         this.status = GameStatus.WAITING;
+        this.pieceIndex = 0;
+        this.pieces = Array.from({ length: 10 }, (_, index) => new Piece(index));
+        this.gameInterval = null;
     }
 
     addPlayer(player) {
@@ -44,12 +48,28 @@ class Game {
     }
 
     launchGame() {
-        if (this.status === GameStatus.WAITING) {
+        if (this.status !== GameStatus.STARTED) {
             this.status = GameStatus.STARTED;
             return true;
         } else {
             return false;
         }
+    }
+
+    gameLoop(io) {
+            this.gameInterval = setInterval(() => {
+                if (this.status === GameStatus.STARTED) {
+                    if (this.pieceIndex < this.pieces.length - 1) {
+                        io.to(this.roomName).emit('next_piece', {piece: this.pieces[this.pieceIndex]});
+                        this.pieceIndex = this.pieceIndex + 1;
+                    } else {
+                        this.status = GameStatus.FINISHED;
+                        this.sendGameStatus(io);
+                        this.pieceIndex = 0;
+                        clearInterval(this.gameInterval);
+                    }
+                }
+            }, 3000);
     }
 
 }

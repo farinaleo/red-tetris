@@ -67,6 +67,7 @@ io.on('connection', (socket) => {
                     sendErrorNotification(io, socket.id, 'Game Status', 'Game running.');
                 } else {
                     currentGame.sendGameStatus(io);
+                    currentGame.gameLoop(io);
                 }
            } else {
                sendErrorNotification(io, socket.id, 'Player status', 'you are not the master.')
