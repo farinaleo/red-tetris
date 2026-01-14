@@ -30,8 +30,20 @@ div.game-board-main {
 div.game-board-status {
     width: 70%;
     height: 100%;
-    /*background-color: brown;*/
-    border-radius: 10px 0 0 0;
+    letter-spacing: 3px;
+    text-align: center;
+}
+
+.waiting {
+    color: #FFEE2F;
+}
+
+.started {
+    color: #932FFF;
+}
+
+.finished {
+    color: #FF2F2F;
 }
 
 @media (max-width: 768px) {

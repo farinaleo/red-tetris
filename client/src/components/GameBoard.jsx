@@ -32,13 +32,25 @@ const GameBoard = () => {
         1, 1, 1, 1, 2, 2, 0, 0, 0, 0,
     ]
 
+    const getGameStatusCss = (gameStatus) => {
+        if (gameStatus === 'WAITING') {
+            return 'game-board-status waiting';
+        }
+        if (gameStatus === 'STARTED') {
+            return 'game-board-status started';
+        }
+        if (gameStatus === 'FINISHED') {
+            return 'game-board-status finished';
+        }
+        return 'game-board-status';
+    }
+
 
     return (
         <div className="game-board-container">
             <div className="game-board-header">
-                <div className="game-board-status">
-                    {game_status}
-                    coucou
+                <div className={getGameStatusCss(game_status)}>
+                    <h2>{game_status}</h2>
                 </div>
                 <NextPiece pieceName={"Z"} />
             </div>
