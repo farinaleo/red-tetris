@@ -1,53 +1,68 @@
 import io from 'socket.io-client';
 import { toast } from 'react-toastify';
+
 let socket;
 let socketStore;
 
-const socketMiddleware = (store) => {
-    socketStore = store;
-    if (!socket) {
-        socket = io('http://localhost:3004',
-        );
+const socketMiddleware = (navigate) => {
+    return (store) => (next) => (action) => {
+        socketStore = store;
 
-        // handle error with a notification
-        socket.on('report_error', (data) => {
-            toast.error(`${data.topic}: ${data.message}`, {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
+        if (!socket) {
+            socket = io('http://localhost:3004');
+
+            socket.on('notify_error', (data) => {
+                toast.error(`${data.topic}: ${data.message}`, {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
             });
-        });
 
-        socket.on('update_players', (players) => {
-            socketStore.dispatch({
-                type: 'UPDATE_PLAYERS',
-                payload: players || [],
+            socket.on('redirect_error', (data) => {
+                if (navigate) {
+                    navigate('/');
+                }
+                toast.error(`${data.topic}: ${data.message}`, {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
             });
-            console.log(players);
-        });
 
-        socket.on('game_status', (data) => {
-            console.log(data);
-           socketStore.dispatch({
-              type: 'GAME_STATUS',
-              payload: data,
-           });
-        });
+            socket.on('update_players', (players) => {
+                socketStore.dispatch({
+                    type: 'UPDATE_PLAYERS',
+                    payload: players || [],
+                });
+                console.log(players);
+            });
 
-        socket.on('next_piece', (data) => {
-            console.log(data);
-           socketStore.dispatch({
-              type: 'NEXT_PIECE',
-              payload: data,
-           });
-        });
-    }
+            socket.on('game_status', (data) => {
+                console.log(data);
+                socketStore.dispatch({
+                    type: 'GAME_STATUS',
+                    payload: data,
+                });
+            });
 
-    return (next) => (action) => {
+            socket.on('next_piece', (data) => {
+                console.log(data);
+                socketStore.dispatch({
+                    type: 'NEXT_PIECE',
+                    payload: data,
+                });
+            });
+        }
+
         switch (action.type) {
             case 'JOIN_ROOM':
                 socket.emit('join', action.payload);
@@ -58,6 +73,7 @@ const socketMiddleware = (store) => {
             default:
                 break;
         }
+
         return next(action);
     };
 };

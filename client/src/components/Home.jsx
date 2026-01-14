@@ -23,7 +23,7 @@ const Home = () => {
 
     return (
         <div className="window-wrapper">
-            <TopBar username={username} roomName={roomName} />
+            <TopBar username={''} roomName={''} />
             <div className="home-wrapper">
                 <div className="join-form">
                     <input

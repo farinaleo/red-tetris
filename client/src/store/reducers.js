@@ -1,7 +1,7 @@
 // client/src/store/reducers.js
 const initialState = {
-    roomName: 'general',
-    username: 'anonymous',
+    roomName: '',
+    username: '',
     players: [],
     game_status: '',
     next_piece: 'Z',
