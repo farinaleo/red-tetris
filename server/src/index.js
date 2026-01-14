@@ -68,8 +68,12 @@ io.on('connection', (socket) => {
             game.removePlayer(socket.id);
             game.sendUpdatedPlayersList(io);
             console.log('Bye bye user see yoo later in ' + roomName);
-        });
 
+            if (game.players.length === 0) {
+                games.delete(roomName);
+                console.log(`Room ${roomName} has been removed as it is now empty.`);
+            }
+        });
     });
 
     socket.on('start_game', ({roomName}) => {
