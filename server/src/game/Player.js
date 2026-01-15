@@ -1,12 +1,13 @@
 const {Piece} = require("./Piece");
 const {Tiles} = require("../enums/Tiles");
+const {Movements, MovementsPositions} = require("../enums/Movements");
 
 class Player {
     constructor(username, socketId) {
         this.username = username;
         this.socketId = socketId;
         this.isMaster = false;
-        this.board = Array.from({ length: 10 * 20 }, (_, index) => 0);
+        this.board = Array.from({ length: 10 * 20 }, (_, index) => Tiles.EMPTY);
         this.nextPiece = null;
         this.currentPiece = null;
         this.pieceId = 0;
@@ -15,7 +16,7 @@ class Player {
     }
 
     reset() {
-        this.board = Array.from({ length: 10 * 20 }, (_, index) => 0);
+        this.board = Array.from({ length: 10 * 20 }, (_, index) => Tiles.EMPTY);
         this.nextPiece = null;
         this.currentPiece = null;
         this.pieceId = 0;
@@ -80,6 +81,24 @@ class Player {
         });
     }
 
+    isRowCompleted(row) {
+        return row.every(element => element !== Tiles.EMPTY && element !== Tiles.BLOCKED);
+    }
+
+    deleteCompletedRows() {
+        let y = 0;
+        while (y < 20) {
+            if (this.isRowCompleted(this.board.slice(y * 10, (y + 1) * 10))) {
+                this.board = [
+                    ...Array.from({ length: 10 }, (_, index) => Tiles.EMPTY),
+                    ...this.board.slice(0, (y * 10)),
+                    ...this.board.slice((y + 1) * 10, 10*20)
+                ]
+            }
+            y++;
+        }
+    };
+
     moveCurrentPiece(x = 0, y = 0) {
         this.currentPiece.updateCoordinates(this.currentPiece.x + x, this.currentPiece.y + y);
         if (this.hasElementCollision()) {
@@ -95,6 +114,16 @@ class Player {
         }
         return false;
     }
+
+    moveCurrentPieceWrapper(direction) {
+        const hasReachBottom = this.moveCurrentPiece(direction.x, direction.y);
+        console.log('has reach bottom: ' + hasReachBottom);
+        if (hasReachBottom) {
+            console.log('lock the piece');
+            this.lockThePiece();
+        }
+        this.deleteCompletedRows();
+    };
 
     lockThePiece() {
         this.currentPiece.shape.forEach((element, index) => {
@@ -121,19 +150,22 @@ class Player {
         return temporaryBoard;
     }
 
-    sendCurrentBoard(io) {
+    periodicMovementDown() {
         if (Date.now() - this.updatedTime >= 1000) {
             console.log('update time and position');
             this.updatedTime = Date.now();
-            const hasReachBottom = this.moveCurrentPiece(0, 1);
-            console.log('has reach bottom: ' + hasReachBottom);
-            if (hasReachBottom) {
-                console.log('lock the piece');
-                this.lockThePiece();
-            }
+            this.moveCurrentPieceWrapper(MovementsPositions.DOWN);
         }
+    }
+
+    sendCurrentBoard(io) {
         const temporaryBoard = this.renderTemporaryBoard();
         console.log('sent board to ' + this.username);
+        let y = 19;
+        while (y >= 0) {
+            console.log(temporaryBoard.slice(y * 10, (y + 1) * 10));
+            y--;
+        }
         io.to(this.socketId).emit('current_board', {board: temporaryBoard});
     }
 

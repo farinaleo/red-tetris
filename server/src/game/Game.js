@@ -22,6 +22,16 @@ class Game {
         return (players.length !== 0);
     }
 
+    socketIdExists(socketId) {
+        const players = this.players.filter(player => player.socketId === socketId);
+        return (players.length !== 0);
+    }
+
+    getPlayerBySocketId(socketId) {
+        const player = this.players.find(player => player.socketId === socketId);
+        return player;
+    }
+
     removePlayer(socketId) {
         this.players = this.players.filter(player => player.socketId !== socketId);
         this.promoteAMasterIfMissing();
@@ -50,6 +60,13 @@ class Game {
         return (player.isMaster);
     }
 
+    getNextPiece(index) {
+        if (index >= this.pieces.length) {
+            this.pieces.push(...Array.from({ length: 10 }, (_, index) => new Piece(index)));
+        }
+        return this.pieces[index];
+    }
+
     launchGame() {
         if (this.status !== GameStatus.STARTED) {
             this.status = GameStatus.STARTED;
@@ -73,13 +90,13 @@ class Game {
         this.gameInterval = setInterval(() => {
             if (this.status === GameStatus.STARTED) {
                 try {
-                    this.players.forEach(player => {
+                    this.players.forEach((player) => {
                         if (player.needANewPiece) {
-                            player.newPiece(this.pieces[player.pieceId + 1].copy(), player.pieceId + 1);
+                            const nextPiece = this.getNextPiece(player.pieceId + 1);
+                            player.newPiece(nextPiece.copy(), player.pieceId + 1);
                             player.sendNextPiece(io);
                         }
-                    });
-                    this.players.forEach((player) => {
+                        player.periodicMovementDown();
                         player.sendCurrentBoard(io);
                     });
                     this.sendUpdatedPlayersList(io);

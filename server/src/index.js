@@ -1,6 +1,7 @@
 const {Game} = require('./game/Game.js');
 const {Player} = require('./game/Player.js');
 const {GameStatus} = require('./enums/GameStatus.js');
+const {Movements, MovementsPositions} = require('./enums/Movements.js');
 const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io');
@@ -92,6 +93,22 @@ io.on('connection', (socket) => {
                sendErrorNotification(io, socket.id, 'Player status', 'you are not the master.')
            }
        }
+    });
+
+    socket.on('move_piece', ({movement}) =>{
+        console.log(movement, Movements[movement]);
+        games.forEach((game, roomName) => {
+           if (game.socketIdExists(socket.id)) {
+               if (game.status === GameStatus.STARTED) {
+                   const player = game.getPlayerBySocketId(socket.id);
+                    if (movement === Movements.LEFT || movement === Movements.RIGHT || movement === Movements.DOWN) {
+                        const coor = MovementsPositions[movement];
+                        player.moveCurrentPieceWrapper(coor);
+                        player.sendCurrentBoard(io);
+                    }
+               }
+           }
+        });
     });
 
 });
