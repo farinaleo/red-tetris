@@ -8,7 +8,7 @@ class Game {
         this.players = [];
         this.status = GameStatus.WAITING;
         this.pieceIndex = 0;
-        this.pieces = Array.from({ length: 1000 }, (_, index) => new Piece(index));
+        this.pieces = Array.from({ length: 10 }, (_, index) => new Piece(index));
         this.gameInterval = null;
     }
 
@@ -59,33 +59,37 @@ class Game {
         }
     }
 
-    initiatePlayers() {
+    initiatePlayers(io) {
         const initialTime = Date.now();
         this.players.forEach(player => {
             player.setInitialTime(initialTime);
-            const o = new Piece(0);
-            o.type = piecesArray[0];
-            o.shape = PiecesShapes[o.type];
-            player.setInitialPiece(o);
+            player.setInitialPieces(this.pieces[0].copy(), this.pieces[1].copy());
+            player.sendNextPiece(io);
         });
     }
 
     gameLoop(io) {
-        this.initiatePlayers()
+        this.initiatePlayers(io);
         this.gameInterval = setInterval(() => {
             if (this.status === GameStatus.STARTED) {
-                if (this.pieceIndex < this.pieces.length - 1) {
-                    io.to(this.roomName).emit('next_piece', {piece: this.pieces[this.pieceIndex]});
-                    this.pieceIndex = this.pieceIndex + 1;
-                } else {
+                try {
+                    this.players.forEach(player => {
+                        if (player.needANewPiece) {
+                            player.newPiece(this.pieces[player.pieceId + 1].copy(), player.pieceId + 1);
+                            player.sendNextPiece(io);
+                        }
+                    });
+                    this.players.forEach((player) => {
+                        player.sendCurrentBoard(io);
+                    });
+                    this.sendUpdatedPlayersList(io);
+                } catch (error) {
+                    console.log(error);
                     this.status = GameStatus.FINISHED;
                     this.sendGameStatus(io);
-                    this.pieceIndex = 0;
+                    this.players.forEach(player => player.reset());
                     clearInterval(this.gameInterval);
                 }
-                this.players.forEach((player) => {
-                    player.sendCurrentBoard(io);
-                });
             }
         }, 1000);
     }
