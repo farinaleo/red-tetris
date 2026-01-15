@@ -23,6 +23,19 @@ class Player {
         this.isMaster = status;
     }
 
+    hasElementCollision() {
+        return this.currentPiece.shape.some((element, index) => {
+            if (element !== 0) {
+                const x = Number(index % 4 + this.currentPiece.x);
+                const y = Number((Math.floor(index / 4) + this.currentPiece.y));
+                if (this.board[x + (10 * y)] !== 0) {
+                    return true;
+                }
+            }
+            return false;
+        });
+    }
+
     hasCollisionX() {
         return this.currentPiece.shape.some((element, index) => {
             if (element !== 0) {
