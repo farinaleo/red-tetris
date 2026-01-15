@@ -1,19 +1,19 @@
 const {Player} = require('./Player.js');
 const {Piece} = require('./Piece.js');
 const {GameStatus} = require('../enums/GameStatus.js');
+const {piecesArray, PiecesShapes} = require("../enums/Pieces");
 class Game {
     constructor(roomName) {
         this.roomName = roomName;
         this.players = [];
         this.status = GameStatus.WAITING;
         this.pieceIndex = 0;
-        this.pieces = Array.from({ length: 10 }, (_, index) => new Piece(index));
+        this.pieces = Array.from({ length: 1000 }, (_, index) => new Piece(index));
         this.gameInterval = null;
     }
 
     addPlayer(player) {
         this.players.push(player);
-        console.log(this.players);
         this.promoteAMasterIfMissing();
     }
 
@@ -24,7 +24,6 @@ class Game {
 
     removePlayer(socketId) {
         this.players = this.players.filter(player => player.socketId !== socketId);
-        console.log('by by player');
         this.promoteAMasterIfMissing();
     }
 
@@ -44,7 +43,6 @@ class Game {
                 firstPlayer.switchMasterStatus(true);
             }
         }
-        console.log(this.players);
     }
 
     isMaster(socketId) {
@@ -61,23 +59,35 @@ class Game {
         }
     }
 
+    initiatePlayers() {
+        const initialTime = Date.now();
+        this.players.forEach(player => {
+            player.setInitialTime(initialTime);
+            const o = new Piece(0);
+            o.type = piecesArray[0];
+            o.shape = PiecesShapes[o.type];
+            player.setInitialPiece(o);
+        });
+    }
+
     gameLoop(io) {
-            this.gameInterval = setInterval(() => {
-                if (this.status === GameStatus.STARTED) {
-                    if (this.pieceIndex < this.pieces.length - 1) {
-                        io.to(this.roomName).emit('next_piece', {piece: this.pieces[this.pieceIndex]});
-                        this.pieceIndex = this.pieceIndex + 1;
-                    } else {
-                        this.status = GameStatus.FINISHED;
-                        this.sendGameStatus(io);
-                        this.pieceIndex = 0;
-                        clearInterval(this.gameInterval);
-                    }
-                    this.players.forEach((player) => {
-                        player.sendCurrentBoard(io);
-                    });
+        this.initiatePlayers()
+        this.gameInterval = setInterval(() => {
+            if (this.status === GameStatus.STARTED) {
+                if (this.pieceIndex < this.pieces.length - 1) {
+                    io.to(this.roomName).emit('next_piece', {piece: this.pieces[this.pieceIndex]});
+                    this.pieceIndex = this.pieceIndex + 1;
+                } else {
+                    this.status = GameStatus.FINISHED;
+                    this.sendGameStatus(io);
+                    this.pieceIndex = 0;
+                    clearInterval(this.gameInterval);
                 }
-            }, 3000);
+                this.players.forEach((player) => {
+                    player.sendCurrentBoard(io);
+                });
+            }
+        }, 1000);
     }
 
 }
