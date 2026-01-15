@@ -78,6 +78,9 @@ const socketMiddleware = (navigate) => {
             case 'START_GAME':
                 socket.emit('start_game', action.payload);
                 break;
+            case 'MOVE_PIECE':
+                socket.emit('move_piece', action.payload);
+                break;
             default:
                 break;
         }

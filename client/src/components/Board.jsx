@@ -40,7 +40,8 @@ const Board = ({boardElements, isSpectrum=false}) => {
           }
         };
     };
-
+    console.log("coucou");
+    console.log(boardElements);
     return (
         <div className="board-container">
             {boardElements.map((element, index) => (

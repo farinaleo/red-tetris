@@ -6,3 +6,7 @@ export const joinRoom = (roomName, username) => (dispatch) => {
 export const StartGame = (roomName) => (dispatch) => {
     dispatch({type: 'START_GAME', payload: {roomName}});
 }
+
+export const movePiece = (movement) => (dispatch) => {
+    dispatch({type: 'MOVE_PIECE', payload: {movement}});
+}
