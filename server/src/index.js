@@ -101,13 +101,10 @@ io.on('connection', (socket) => {
            if (game.socketIdExists(socket.id)) {
                if (game.status === GameStatus.STARTED) {
                    const player = game.getPlayerBySocketId(socket.id);
-                    if (movement === Movements.LEFT || movement === Movements.RIGHT || movement === Movements.DOWN) {
+
+                    if (movement !== Movements.FAST_DOWN) {
                         const coor = MovementsPositions[movement];
-                        const event = player.moveCurrentPieceWrapper(coor);
-                        player.sendCurrentBoard(io);
-                        if (event === PlayerEvents.DELETE_ROW) {
-                            game.bockRowForOthersPlayers(player.username);
-                        }
+                        game.singlePlayerGameLogic(io, player, false, coor);
                     }
                }
            }

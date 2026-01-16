@@ -14,8 +14,10 @@ class Player {
         this.nextPiece = null;
         this.currentPiece = null;
         this.pieceId = 0;
+        this.speed = {speed: 1000};
         this.updatedTime = null;
         this.needANewPiece = false;
+        this.level = 0;
     }
 
     reset() {
@@ -24,12 +26,18 @@ class Player {
         this.nextPiece = null;
         this.currentPiece = null;
         this.pieceId = 0;
+        this.speed = {speed: 1000};
         this.updatedTime = null;
         this.needANewPiece = false;
+        this.level = 0;
     }
 
     setInitialTime(initialTime) {
         this.updatedTime = initialTime;
+    }
+
+    setInitialSpeed(speed) {
+        this.speed = speed;
     }
 
     setInitialPieces(piece, nextPiece) {
@@ -56,10 +64,10 @@ class Player {
     }
 
     hasElementCollision() {
-        return this.currentPiece.shape.some((element, index) => {
+        return this.currentPiece.getShape().some((element, index) => {
             if (element !== Tiles.EMPTY) {
-                const x = Number(index % 4 + this.currentPiece.x);
-                const y = Number((Math.floor(index / 4) + this.currentPiece.y));
+                const x = Number(index % this.currentPiece.size + this.currentPiece.x);
+                const y = Number((Math.floor(index / this.currentPiece.size) + this.currentPiece.y));
                 if (this.board[x + (10 * y)] !== Tiles.EMPTY) {
                     return true;
                 }
@@ -69,9 +77,9 @@ class Player {
     }
 
     hasCollisionX() {
-        return this.currentPiece.shape.some((element, index) => {
+        return this.currentPiece.getShape().some((element, index) => {
             if (element !== Tiles.EMPTY) {
-                const x = Number(index % 4 + this.currentPiece.x);
+                const x = Number(index % this.currentPiece.size + this.currentPiece.x);
                 if (x < 0 || x > 9) {
                     return true;
                 }
@@ -81,9 +89,9 @@ class Player {
     }
 
     hasCollisionY() {
-        return this.currentPiece.shape.some((element, index) => {
+        return this.currentPiece.getShape().some((element, index) => {
             if (element !== Tiles.EMPTY) {
-                const y = Number((Math.floor(index / 4) + this.currentPiece.y));
+                const y = Number((Math.floor(index / this.currentPiece.size) + this.currentPiece.y));
                 if (y < 0 || y > 19) {
                     return true;
                 }
@@ -106,8 +114,8 @@ class Player {
                     ...this.board.slice(0, (y * 10)),
                     ...this.board.slice((y + 1) * 10, 10*20)
                 ]
+                this.level++;
                 event = PlayerEvents.DELETE_ROW;
-                console.log('return ' + event);
             }
             y++;
         }
@@ -133,17 +141,17 @@ class Player {
         }
     }
 
-    moveCurrentPiece(x = 0, y = 0) {
-        this.currentPiece.updateCoordinates(this.currentPiece.x + x, this.currentPiece.y + y);
+    moveCurrentPiece(x = 0, y = 0, rotation = 0) {
+        this.currentPiece.updateCoordinates(this.currentPiece.x + x, this.currentPiece.y + y, rotation);
         if (this.hasElementCollision()) {
-            this.currentPiece.updateCoordinates(this.currentPiece.x - x, this.currentPiece.y - y);
+            this.currentPiece.updateCoordinates(this.currentPiece.x - x, this.currentPiece.y - y, -rotation);
             return (y !== 0);
         }
         if (this.hasCollisionX()) {
-            this.currentPiece.updateCoordinates(this.currentPiece.x - x, this.currentPiece.y);
+            this.currentPiece.updateCoordinates(this.currentPiece.x - x, this.currentPiece.y, -rotation);
         }
         if (this.hasCollisionY()) {
-            this.currentPiece.updateCoordinates(this.currentPiece.x, this.currentPiece.y - y);
+            this.currentPiece.updateCoordinates(this.currentPiece.x, this.currentPiece.y - y, -rotation);
             return true;
         }
         return false;
@@ -152,7 +160,7 @@ class Player {
     moveCurrentPieceWrapper(direction) {
         let event = PlayerEvents.NOTHING;
         if (!this.needANewPeice) {
-            const hasReachBottom = this.moveCurrentPiece(direction.x, direction.y);
+            const hasReachBottom = this.moveCurrentPiece(direction.x, direction.y, direction.rotation);
             if (hasReachBottom) {
                 this.lockThePiece();
             }
@@ -162,11 +170,11 @@ class Player {
     };
 
     lockThePiece() {
-        this.currentPiece.shape.forEach((element, index) => {
+        this.currentPiece.getShape().forEach((element, index) => {
             if (element !== Tiles.EMPTY) {
                 this.board[
-                    Number(index % 4 + this.currentPiece.x)
-                    + Number(10 * (Math.floor(index / 4) + this.currentPiece.y))
+                    Number(index % this.currentPiece.size + this.currentPiece.x)
+                    + Number(10 * (Math.floor(index / this.currentPiece.size) + this.currentPiece.y))
                     ] = element;
             }
         });
@@ -176,11 +184,11 @@ class Player {
     renderTemporaryBoard() {
         const temporaryBoard = Array.from(this.board);
         if (!this.needANewPiece) {
-            this.currentPiece.shape.forEach((element, index) => {
+            this.currentPiece.getShape().forEach((element, index) => {
                 if (element !== Tiles.EMPTY) {
                     temporaryBoard[
-                    Number(index % 4 + this.currentPiece.x)
-                    + Number(10 * (Math.floor(index / 4) + this.currentPiece.y))
+                    Number(index % this.currentPiece.size + this.currentPiece.x)
+                    + Number(10 * (Math.floor(index / this.currentPiece.size) + this.currentPiece.y))
                         ] = element;
                 }
             });
@@ -190,7 +198,7 @@ class Player {
 
     periodicMovementDown() {
         let event = PlayerEvents.NOTHING;
-        if (Date.now() - this.updatedTime >= 1000) {
+        if (Date.now() - this.updatedTime >= this.speed.speed) {
             this.updatedTime = Date.now();
             event = this.moveCurrentPieceWrapper(MovementsPositions.DOWN);
         }

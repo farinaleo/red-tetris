@@ -7,9 +7,10 @@ const Movements = Object.freeze({
 });
 
 const MovementsPositions = Object.freeze({
-    LEFT: {x: -1, y: 0},
-    RIGHT: {x: 1, y: 0},
-    DOWN: {x: 0, y: 1},
+    LEFT: {x: -1, y: 0, rotation: 0},
+    RIGHT: {x: 1, y: 0, rotation: 0},
+    DOWN: {x: 0, y: 1, rotation: 0},
+    ROTATE: {x: 0, y: 0, rotation: 1},
 })
 
 module.exports = {Movements, MovementsPositions};

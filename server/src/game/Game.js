@@ -12,6 +12,8 @@ class Game {
         this.pieceIndex = 0;
         this.pieces = Array.from({ length: 10 }, (_, index) => new Piece(index));
         this.gameInterval = null;
+        this.speed = {speed: 1000};
+        this.initialTime = null;
     }
 
     addPlayer(player) {
@@ -88,18 +90,29 @@ class Game {
         return false;
     }
 
-    terminateGame(io) {
+    setTheWinner(io) {
         if (this.players.length > 1) {
             const winner = this.players.find(player => player.status === PlayerStatus.PLAYING);
             winner.changeStatusAndNotify(PlayerStatus.WON, io);
         }
+    }
+
+    terminateGame(io, hasError = false) {
         this.status = GameStatus.FINISHED;
+        if (!hasError) {
+            this.setTheWinner(io);
+        }
+        this.sendGameStatus(io);
+        this.players.forEach(player => player.reset());
+        clearInterval(this.gameInterval);
     }
 
     initiatePlayers(io) {
         const initialTime = Date.now();
+        this.initialTime = initialTime;
         this.players.forEach(player => {
             player.setInitialTime(initialTime);
+            player.setInitialSpeed(this.speed);
             player.setInitialPieces(this.pieces[0].copy(), this.pieces[1].copy());
             player.sendNextPiece(io);
             player.status = PlayerStatus.PLAYING;
@@ -118,42 +131,60 @@ class Game {
         }
     }
 
+    singlePlayerGameLogic(io, player, isPeriodic = true, direction = null) {
+        if (player.status === PlayerStatus.PLAYING) {
+            if (player.needANewPiece) {
+                const nextPiece = this.getNextPiece(player.pieceId + 1);
+                player.newPiece(nextPiece.copy(), player.pieceId + 1);
+                player.sendCurrentBoard(io);
+                player.sendNextPiece(io);
+            }
+            let event = PlayerEvents.NOTHING;
+
+            if (isPeriodic) {
+                event = player.periodicMovementDown();
+            } else {
+                event = player.moveCurrentPieceWrapper(direction);
+            }
+            player.sendCurrentBoard(io);
+            if (event === PlayerEvents.DELETE_ROW) {
+                this.bockRowForOthersPlayers(player.username);
+            }
+        }
+    }
+
+    updateSpeed() {
+        const highestLevel = Math.max(...this.players.map(player => player.level));
+        if (highestLevel < 5) {
+            this.speed.speed = 1000;
+        } else if (highestLevel < 10) {
+            this.speed.speed = 900;
+        } else if (highestLevel < 15) {
+            this.speed.speed = 800;
+        } else {
+            this.speed.speed = 700;
+        }
+    }
+
     gameLoop(io) {
         this.initiatePlayers(io);
         this.gameInterval = setInterval(() => {
             if (this.status === GameStatus.STARTED) {
                 try {
+                    this.updateSpeed();
                     this.players.forEach((player) => {
-                        if (player.status === PlayerStatus.PLAYING) {
-                            if (player.needANewPiece) {
-                                const nextPiece = this.getNextPiece(player.pieceId + 1);
-                                player.newPiece(nextPiece.copy(), player.pieceId + 1);
-                                player.sendCurrentBoard(io);
-                                player.sendNextPiece(io);
-                            }
-                            const event = player.periodicMovementDown();
-                            player.sendCurrentBoard(io);
-                            if (event === PlayerEvents.DELETE_ROW) {
-                                this.bockRowForOthersPlayers(player.username);
-                            }
-                        }
+                        this.singlePlayerGameLogic(io, player);
                     });
                     this.sendUpdatedPlayersList(io);
                     if (this.isGameFinished()) {
                         this.terminateGame(io);
-                        this.sendGameStatus(io);
-                        this.players.forEach(player => player.reset());
-                        clearInterval(this.gameInterval);
                     }
                 } catch (error) {
                     console.log(error);
-                    this.status = GameStatus.FINISHED;
-                    this.sendGameStatus(io);
-                    this.players.forEach(player => player.reset());
-                    clearInterval(this.gameInterval);
+                    this.terminateGame(io, true);
                 }
             }
-        }, 500);
+        }, 10);
     }
 
 }
