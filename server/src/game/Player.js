@@ -2,6 +2,7 @@ const {Piece} = require("./Piece");
 const {Tiles} = require("../enums/Tiles");
 const {Movements, MovementsPositions} = require("../enums/Movements");
 const {PlayerStatus} = require("../enums/PlayerStatus");
+const {PlayerEvents} = require("../enums/PlayerEvents");
 
 class Player {
     constructor(username, socketId) {
@@ -48,8 +49,10 @@ class Player {
     }
 
     changeStatusAndNotify(newStatus, io) {
-        this.status = newStatus;
-        this.sendPlayerStatus(io);
+        if (this.status !== newStatus)  {
+            this.status = newStatus;
+            this.sendPlayerStatus(io);
+        }
     }
 
     hasElementCollision() {
@@ -95,6 +98,7 @@ class Player {
 
     deleteCompletedRows() {
         let y = 0;
+        let event = PlayerEvents.NOTHING;
         while (y < 20) {
             if (this.isRowCompleted(this.board.slice(y * 10, (y + 1) * 10))) {
                 this.board = [
@@ -102,10 +106,32 @@ class Player {
                     ...this.board.slice(0, (y * 10)),
                     ...this.board.slice((y + 1) * 10, 10*20)
                 ]
+                event = PlayerEvents.DELETE_ROW;
+                console.log('return ' + event);
             }
             y++;
         }
+        return event;
     };
+
+    isRowBlocked(row) {
+        return row.every(element => element === Tiles.BLOCKED);
+    }
+
+    blockARow() {
+        let y = 19;
+        while (y >= 0) {
+            if (!this.isRowBlocked(this.board.slice(y * 10, (y + 1) * 10))) {
+                this.board = [
+                    ...this.board.slice(0, (y * 10)),
+                    ...Array.from({ length: 10 }, (_, index) => Tiles.BLOCKED),
+                    ...this.board.slice((y + 1) * 10, 10*20)
+                ]
+                return;
+            }
+            y--;
+        }
+    }
 
     moveCurrentPiece(x = 0, y = 0) {
         this.currentPiece.updateCoordinates(this.currentPiece.x + x, this.currentPiece.y + y);
@@ -124,13 +150,15 @@ class Player {
     }
 
     moveCurrentPieceWrapper(direction) {
+        let event = PlayerEvents.NOTHING;
         if (!this.needANewPeice) {
             const hasReachBottom = this.moveCurrentPiece(direction.x, direction.y);
             if (hasReachBottom) {
                 this.lockThePiece();
             }
-            this.deleteCompletedRows();
+            event = this.deleteCompletedRows();
         }
+        return event;
     };
 
     lockThePiece() {
@@ -161,10 +189,12 @@ class Player {
     }
 
     periodicMovementDown() {
+        let event = PlayerEvents.NOTHING;
         if (Date.now() - this.updatedTime >= 1000) {
             this.updatedTime = Date.now();
-            this.moveCurrentPieceWrapper(MovementsPositions.DOWN);
+            event = this.moveCurrentPieceWrapper(MovementsPositions.DOWN);
         }
+        return event;
     }
 
     sendCurrentBoard(io) {

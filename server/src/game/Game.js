@@ -3,6 +3,7 @@ const {Piece} = require('./Piece.js');
 const {GameStatus} = require('../enums/GameStatus.js');
 const {piecesArray, PiecesShapes} = require("../enums/Pieces");
 const {PlayerStatus} = require("../enums/PlayerStatus");
+const {PlayerEvents} = require("../enums/PlayerEvents");
 class Game {
     constructor(roomName) {
         this.roomName = roomName;
@@ -68,6 +69,15 @@ class Game {
         return this.pieces[index];
     }
 
+    bockRowForOthersPlayers(username) {
+        console.log("Block row");
+        this.players.forEach(player => {
+            if (player.username !== username) {
+                player.blockARow();
+            }
+        });
+    }
+
     isGameFinished() {
         if (this.players.length === 1 && this.players[0].status === PlayerStatus.LOST) {
             return true;
@@ -101,6 +111,7 @@ class Game {
     launchGame() {
         if (this.status !== GameStatus.STARTED) {
             this.status = GameStatus.STARTED;
+            this.pieces = Array.from({ length: 10 }, (_, index) => new Piece(index));
             return true;
         } else {
             return false;
@@ -117,10 +128,14 @@ class Game {
                             if (player.needANewPiece) {
                                 const nextPiece = this.getNextPiece(player.pieceId + 1);
                                 player.newPiece(nextPiece.copy(), player.pieceId + 1);
+                                player.sendCurrentBoard(io);
                                 player.sendNextPiece(io);
                             }
-                            player.periodicMovementDown();
+                            const event = player.periodicMovementDown();
                             player.sendCurrentBoard(io);
+                            if (event === PlayerEvents.DELETE_ROW) {
+                                this.bockRowForOthersPlayers(player.username);
+                            }
                         }
                     });
                     this.sendUpdatedPlayersList(io);
@@ -138,7 +153,7 @@ class Game {
                     clearInterval(this.gameInterval);
                 }
             }
-        }, 1000);
+        }, 500);
     }
 
 }
