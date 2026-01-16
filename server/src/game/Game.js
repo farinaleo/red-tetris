@@ -2,6 +2,7 @@ const {Player} = require('./Player.js');
 const {Piece} = require('./Piece.js');
 const {GameStatus} = require('../enums/GameStatus.js');
 const {piecesArray, PiecesShapes} = require("../enums/Pieces");
+const {PlayerStatus} = require("../enums/PlayerStatus");
 class Game {
     constructor(roomName) {
         this.roomName = roomName;
@@ -67,6 +68,36 @@ class Game {
         return this.pieces[index];
     }
 
+    isGameFinished() {
+        if (this.players.length === 1 && this.players[0].status === PlayerStatus.LOST) {
+            return true;
+        } else if (this.players.length > 1) {
+            const playingPlayers = this.players.filter(player => player.status === PlayerStatus.PLAYING);
+            return playingPlayers.length === 1;
+        }
+        return false;
+    }
+
+    terminateGame(io) {
+        if (this.players.length > 1) {
+            const winner = this.players.find(player => player.status === PlayerStatus.PLAYING);
+            winner.changeStatusAndNotify(PlayerStatus.WON, io);
+        }
+        this.status = GameStatus.FINISHED;
+    }
+
+    initiatePlayers(io) {
+        const initialTime = Date.now();
+        this.players.forEach(player => {
+            player.setInitialTime(initialTime);
+            player.setInitialPieces(this.pieces[0].copy(), this.pieces[1].copy());
+            player.sendNextPiece(io);
+            player.status = PlayerStatus.PLAYING;
+            player.sendCurrentBoard(io);
+        });
+        this.sendUpdatedPlayersList(io);
+    }
+
     launchGame() {
         if (this.status !== GameStatus.STARTED) {
             this.status = GameStatus.STARTED;
@@ -76,30 +107,29 @@ class Game {
         }
     }
 
-    initiatePlayers(io) {
-        const initialTime = Date.now();
-        this.players.forEach(player => {
-            player.setInitialTime(initialTime);
-            player.setInitialPieces(this.pieces[0].copy(), this.pieces[1].copy());
-            player.sendNextPiece(io);
-        });
-    }
-
     gameLoop(io) {
         this.initiatePlayers(io);
         this.gameInterval = setInterval(() => {
             if (this.status === GameStatus.STARTED) {
                 try {
                     this.players.forEach((player) => {
-                        if (player.needANewPiece) {
-                            const nextPiece = this.getNextPiece(player.pieceId + 1);
-                            player.newPiece(nextPiece.copy(), player.pieceId + 1);
-                            player.sendNextPiece(io);
+                        if (player.status === PlayerStatus.PLAYING) {
+                            if (player.needANewPiece) {
+                                const nextPiece = this.getNextPiece(player.pieceId + 1);
+                                player.newPiece(nextPiece.copy(), player.pieceId + 1);
+                                player.sendNextPiece(io);
+                            }
+                            player.periodicMovementDown();
+                            player.sendCurrentBoard(io);
                         }
-                        player.periodicMovementDown();
-                        player.sendCurrentBoard(io);
                     });
                     this.sendUpdatedPlayersList(io);
+                    if (this.isGameFinished()) {
+                        this.terminateGame(io);
+                        this.sendGameStatus(io);
+                        this.players.forEach(player => player.reset());
+                        clearInterval(this.gameInterval);
+                    }
                 } catch (error) {
                     console.log(error);
                     this.status = GameStatus.FINISHED;

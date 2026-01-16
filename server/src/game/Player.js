@@ -1,12 +1,14 @@
 const {Piece} = require("./Piece");
 const {Tiles} = require("../enums/Tiles");
 const {Movements, MovementsPositions} = require("../enums/Movements");
+const {PlayerStatus} = require("../enums/PlayerStatus");
 
 class Player {
     constructor(username, socketId) {
         this.username = username;
         this.socketId = socketId;
         this.isMaster = false;
+        this.status = PlayerStatus.WAITING;
         this.board = Array.from({ length: 10 * 20 }, (_, index) => Tiles.EMPTY);
         this.nextPiece = null;
         this.currentPiece = null;
@@ -16,6 +18,7 @@ class Player {
     }
 
     reset() {
+        this.status = PlayerStatus.WAITING;
         this.board = Array.from({ length: 10 * 20 }, (_, index) => Tiles.EMPTY);
         this.nextPiece = null;
         this.currentPiece = null;
@@ -42,6 +45,11 @@ class Player {
 
     switchMasterStatus(status) {
         this.isMaster = status;
+    }
+
+    changeStatusAndNotify(newStatus, io) {
+        this.status = newStatus;
+        this.sendPlayerStatus(io);
     }
 
     hasElementCollision() {
@@ -116,13 +124,13 @@ class Player {
     }
 
     moveCurrentPieceWrapper(direction) {
-        const hasReachBottom = this.moveCurrentPiece(direction.x, direction.y);
-        console.log('has reach bottom: ' + hasReachBottom);
-        if (hasReachBottom) {
-            console.log('lock the piece');
-            this.lockThePiece();
+        if (!this.needANewPeice) {
+            const hasReachBottom = this.moveCurrentPiece(direction.x, direction.y);
+            if (hasReachBottom) {
+                this.lockThePiece();
+            }
+            this.deleteCompletedRows();
         }
-        this.deleteCompletedRows();
     };
 
     lockThePiece() {
@@ -139,20 +147,21 @@ class Player {
 
     renderTemporaryBoard() {
         const temporaryBoard = Array.from(this.board);
-        this.currentPiece.shape.forEach((element, index) => {
-            if (element !== Tiles.EMPTY) {
-                temporaryBoard[
-                Number(index % 4 + this.currentPiece.x)
-                + Number(10 * (Math.floor(index / 4) + this.currentPiece.y))
-                    ] = element;
-            }
-        });
+        if (!this.needANewPiece) {
+            this.currentPiece.shape.forEach((element, index) => {
+                if (element !== Tiles.EMPTY) {
+                    temporaryBoard[
+                    Number(index % 4 + this.currentPiece.x)
+                    + Number(10 * (Math.floor(index / 4) + this.currentPiece.y))
+                        ] = element;
+                }
+            });
+        }
         return temporaryBoard;
     }
 
     periodicMovementDown() {
         if (Date.now() - this.updatedTime >= 1000) {
-            console.log('update time and position');
             this.updatedTime = Date.now();
             this.moveCurrentPieceWrapper(MovementsPositions.DOWN);
         }
@@ -160,17 +169,19 @@ class Player {
 
     sendCurrentBoard(io) {
         const temporaryBoard = this.renderTemporaryBoard();
-        console.log('sent board to ' + this.username);
-        let y = 19;
-        while (y >= 0) {
-            console.log(temporaryBoard.slice(y * 10, (y + 1) * 10));
-            y--;
-        }
         io.to(this.socketId).emit('current_board', {board: temporaryBoard});
+        if (this.hasElementCollision() && this.currentPiece.x === 0 && this.currentPiece.y === 0) {
+            console.log("Game Over");
+            this.changeStatusAndNotify(PlayerStatus.LOST, io);
+        }
     }
 
     sendNextPiece(io) {
         io.to(this.socketId).emit('next_piece', {piece: this.nextPiece});
+    }
+
+    sendPlayerStatus(io) {
+        io.to(this.socketId).emit('player_status', {status: this.status});
     }
 }
 
