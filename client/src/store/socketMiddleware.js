@@ -1,5 +1,6 @@
 import io from 'socket.io-client';
 import { toast } from 'react-toastify';
+import StatusMessages from '../types/enums/StatusMessages.jsx';
 
 let socket;
 let socketStore;
@@ -13,6 +14,18 @@ const socketMiddleware = (navigate) => {
 
             socket.on('notify_error', (data) => {
                 toast.error(`${data.topic}: ${data.message}`, {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                });
+            });
+
+            socket.on('player_status', (data) => {
+                toast.info(`Game status: ${StatusMessages[data.status]}`, {
                     position: "top-right",
                     autoClose: 5000,
                     hideProgressBar: false,

@@ -36,6 +36,11 @@ const gameReducer = (state = initialState, action) => {
                 ...state,
                 current_board: action.payload.board,
             }
+        case 'PLAYER_STATUS' :
+            return {
+                ...state,
+                player_status: action.payload.status,
+            }
         default:
             return state;
     }
