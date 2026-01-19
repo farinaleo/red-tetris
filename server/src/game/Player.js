@@ -43,6 +43,11 @@ class Player {
     setInitialPieces(piece, nextPiece) {
         this.currentPiece = piece;
         this.nextPiece = nextPiece;
+        this.pieceId = 1;
+    }
+
+    setHardDrop() {
+        this.currentPiece.hardDrop = true;
     }
 
     newPiece(piece, pieceId) {
@@ -104,10 +109,18 @@ class Player {
         return row.every(element => element !== Tiles.EMPTY && element !== Tiles.BLOCKED);
     }
 
-    deleteCompletedRows() {
-        let y = 0;
-        let event = PlayerEvents.NOTHING;
-        while (y < 20) {
+    countCompletedRows() {
+        let completedRows = 0;
+        for (let y = 0; y < 20; y++) {
+            if (this.isRowCompleted(this.board.slice(y * 10, (y + 1) * 10))) {
+                completedRows++;
+            }
+        }
+        return completedRows;
+    }
+
+    deleteACompletedRow() {
+        for (let y = 0; y < 20; y++) {
             if (this.isRowCompleted(this.board.slice(y * 10, (y + 1) * 10))) {
                 this.board = [
                     ...Array.from({ length: 10 }, (_, index) => Tiles.EMPTY),
@@ -115,20 +128,17 @@ class Player {
                     ...this.board.slice((y + 1) * 10, 10*20)
                 ]
                 this.level++;
-                event = PlayerEvents.DELETE_ROW;
+                return;
             }
-            y++;
         }
-        return event;
-    };
+    }
 
     isRowBlocked(row) {
         return row.every(element => element === Tiles.BLOCKED);
     }
 
     blockARow() {
-        let y = 19;
-        while (y >= 0) {
+        for (let y = 19; y >= 0; y--) {
             if (!this.isRowBlocked(this.board.slice(y * 10, (y + 1) * 10))) {
                 this.board = [
                     ...this.board.slice(0, (y * 10)),
@@ -137,11 +147,14 @@ class Player {
                 ]
                 return;
             }
-            y--;
         }
     }
 
     moveCurrentPiece(x = 0, y = 0, rotation = 0) {
+        if (this.currentPiece.hardDrop === true) {
+            x = 0;
+            rotation = 0;
+        }
         this.currentPiece.updateCoordinates(this.currentPiece.x + x, this.currentPiece.y + y, rotation);
         if (this.hasElementCollision()) {
             this.currentPiece.updateCoordinates(this.currentPiece.x - x, this.currentPiece.y - y, -rotation);
@@ -153,18 +166,21 @@ class Player {
         if (this.hasCollisionY()) {
             this.currentPiece.updateCoordinates(this.currentPiece.x, this.currentPiece.y - y, -rotation);
             return true;
+        } else if (y !== 0) {
+            this.updatedTime = Date.now();
         }
         return false;
     }
 
     moveCurrentPieceWrapper(direction) {
-        let event = PlayerEvents.NOTHING;
+        let event = {hasReachBottom: false, blockedRow: 0};
         if (!this.needANewPeice) {
             const hasReachBottom = this.moveCurrentPiece(direction.x, direction.y, direction.rotation);
             if (hasReachBottom) {
                 this.lockThePiece();
+                event.hasReachBottom = true;
             }
-            event = this.deleteCompletedRows();
+            event.blockedRow = this.countCompletedRows();
         }
         return event;
     };
@@ -197,7 +213,7 @@ class Player {
     }
 
     periodicMovementDown() {
-        let event = PlayerEvents.NOTHING;
+        let event = {hasReachBottom: false, blockedRow: 0};
         if (Date.now() - this.updatedTime >= this.speed.speed) {
             this.updatedTime = Date.now();
             event = this.moveCurrentPieceWrapper(MovementsPositions.DOWN);

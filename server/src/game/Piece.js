@@ -1,14 +1,28 @@
 const {piecesArray, PiecesShapes} = require('../enums/Pieces.js');
+
+let lastPieceIndex = 0;
+
 class Piece {
     constructor(index) {
-        const randomIndex = Math.floor(Math.random() * piecesArray.length);
+        let randomIndex= 0;
+
+
+        do {
+            randomIndex = Math.floor(Math.random() * piecesArray.length);
+        } while (randomIndex === lastPieceIndex);
+
+        const selectedPiece = piecesArray[randomIndex];
+
         this.index = index;
-        this.type = piecesArray[randomIndex].type;
-        this.size = piecesArray[randomIndex].size;
+        this.type = selectedPiece.type;
+        this.size = selectedPiece.size;
         this.shape = PiecesShapes[this.type];
-        this.x = 0
-        this.y = 0
-        this.rotation = 0
+        this.x = 0;
+        this.y = 0;
+        this.rotation = 0;
+        this.hardDrop = false;
+
+        lastPieceIndex = randomIndex;
     }
 
     copy() {

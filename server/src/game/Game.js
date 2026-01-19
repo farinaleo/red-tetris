@@ -4,6 +4,7 @@ const {GameStatus} = require('../enums/GameStatus.js');
 const {piecesArray, PiecesShapes} = require("../enums/Pieces");
 const {PlayerStatus} = require("../enums/PlayerStatus");
 const {PlayerEvents} = require("../enums/PlayerEvents");
+const {Movements, MovementsPositions} = require('../enums/Movements.js');
 class Game {
     constructor(roomName) {
         this.roomName = roomName;
@@ -14,6 +15,7 @@ class Game {
         this.gameInterval = null;
         this.speed = {speed: 1000};
         this.initialTime = null;
+        this.isMultuPlayers = false;
     }
 
     destroy() {
@@ -90,9 +92,9 @@ class Game {
     }
 
     isGameFinished() {
-        if (this.players.length === 1 && this.players[0].status === PlayerStatus.LOST) {
+        if (!this.isMultyPLayers && this.players[0].status === PlayerStatus.LOST) {
             return true;
-        } else if (this.players.length > 1) {
+        } else if (this.isMultyPlayers) {
             const playingPlayers = this.players.filter(player => player.status === PlayerStatus.PLAYING);
             return playingPlayers.length === 1;
         }
@@ -100,7 +102,7 @@ class Game {
     }
 
     setTheWinner(io) {
-        if (this.players.length > 1) {
+        if (this.isMultyPlayers) {
             const winner = this.players.find(player => player.status === PlayerStatus.PLAYING);
             winner.changeStatusAndNotify(PlayerStatus.WON, io);
         }
@@ -132,6 +134,7 @@ class Game {
 
     launchGame() {
         if (this.status !== GameStatus.STARTED) {
+            this.isMultyPlayers = this.players.length > 1;
             this.status = GameStatus.STARTED;
             this.pieces = Array.from({ length: 10 }, (_, index) => new Piece(index));
             return true;
@@ -140,7 +143,8 @@ class Game {
         }
     }
 
-    singlePlayerGameLogic(io, player, isPeriodic = true, direction = null) {
+    async singlePlayerGameLogic(io, player, isPeriodic = true, direction = null) {
+        let event = {hasReachBottom: false, blockedRow: 0};
         if (player.status === PlayerStatus.PLAYING) {
             if (player.needANewPiece) {
                 const nextPiece = this.getNextPiece(player.pieceId + 1);
@@ -148,7 +152,6 @@ class Game {
                 player.sendCurrentBoard(io);
                 player.sendNextPiece(io);
             }
-            let event = PlayerEvents.NOTHING;
 
             if (isPeriodic) {
                 event = player.periodicMovementDown();
@@ -156,8 +159,24 @@ class Game {
                 event = player.moveCurrentPieceWrapper(direction);
             }
             player.sendCurrentBoard(io);
-            if (event === PlayerEvents.DELETE_ROW) {
+            for (let i = 0; i < event.blockedRow; i++) {
                 this.bockRowForOthersPlayers(player.username);
+                player.deleteACompletedRow();
+                player.sendCurrentBoard(io);
+                await new Promise(r => setTimeout(r, 10));
+            }
+        }
+        return event;
+    }
+
+    async hardDrop(io, player) {
+        let event = {hasReachBottom: false, blockedRow: 0};
+        player.setHardDrop();
+        for (let i = 0; i < 20; i++) {
+            event = await this.singlePlayerGameLogic(io, player, false, MovementsPositions.DOWN);
+            await new Promise(r => setTimeout(r, 10));
+            if (event.hasReachBottom) {
+                break;
             }
         }
     }

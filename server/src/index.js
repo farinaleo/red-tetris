@@ -108,6 +108,8 @@ io.on('connection', (socket) => {
                     if (movement !== Movements.FAST_DOWN) {
                         const coor = MovementsPositions[movement];
                         game.singlePlayerGameLogic(io, player, false, coor);
+                    } else if (movement === Movements.FAST_DOWN) {
+                        game.hardDrop(io, player);
                     }
                }
            }
