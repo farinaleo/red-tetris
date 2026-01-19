@@ -16,6 +16,10 @@ class Game {
         this.initialTime = null;
     }
 
+    destroy() {
+        clearInterval(this.gameInterval);
+    }
+
     addPlayer(player) {
         this.players.push(player);
         this.promoteAMasterIfMissing();
@@ -50,11 +54,16 @@ class Game {
     }
 
     promoteAMasterIfMissing() {
+        console.log("Promote master");
+        console.log(this.players);
         const masters = this.players.filter(player => player.isMaster);
+        console.log(masters);
         if (!(Array.isArray(masters) && masters.length !== 0)) {
             if (Array.isArray(this.players) && this.players.length !==0) {
+                console.log("Promote master !!!");
                 const firstPlayer = this.players[0];
                 firstPlayer.switchMasterStatus(true);
+                console.log(firstPlayer);
             }
         }
     }
@@ -158,11 +167,13 @@ class Game {
         if (highestLevel < 5) {
             this.speed.speed = 1000;
         } else if (highestLevel < 10) {
-            this.speed.speed = 900;
+            this.speed.speed = 850;
         } else if (highestLevel < 15) {
-            this.speed.speed = 800;
-        } else {
             this.speed.speed = 700;
+        } else if (highestLevel < 20){
+            this.speed.speed = 550;
+        } else {
+            this.speed.speed = 400;
         }
     }
 

@@ -12,7 +12,11 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server, {
     cors: {
-        origin: "http://localhost:8080", // Allow requests from the client
+        origin: [
+            "http://localhost:8080",
+            "http://10.11.1.3:8080",
+            "*",
+        ],
         methods: ["GET", "POST"]
     }
 });
@@ -37,8 +41,6 @@ io.on('connection', (socket) => {
     console.log('Say hi to a new user !!');
 
     socket.on('join', ({ roomName, username }) => {
-        console.log(username + ' ask to join ' + roomName);
-
         if (!games.has(roomName)) {
             games.set(roomName, new Game(roomName));
         }
@@ -72,7 +74,8 @@ io.on('connection', (socket) => {
             console.log('Bye bye user see yoo later in ' + roomName);
 
             if (game.players.length === 0) {
-                 games.delete(roomName);
+                game.destroy();
+                 console.log(games.delete(roomName));
                 console.log(`Room ${roomName} has been removed as it is now empty.`);
             }
         });
