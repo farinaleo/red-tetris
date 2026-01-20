@@ -56,11 +56,9 @@ const socketMiddleware = (navigate) => {
                     type: 'UPDATE_PLAYERS',
                     payload: players || [],
                 });
-                console.log(players);
             });
 
             socket.on('game_status', (data) => {
-                console.log(data);
                 socketStore.dispatch({
                     type: 'GAME_STATUS',
                     payload: data,
@@ -68,7 +66,6 @@ const socketMiddleware = (navigate) => {
             });
 
             socket.on('next_piece', (data) => {
-                console.log(data);
                 socketStore.dispatch({
                     type: 'NEXT_PIECE',
                     payload: data,
@@ -76,7 +73,6 @@ const socketMiddleware = (navigate) => {
             });
 
             socket.on('current_board', (data) => {
-               console.log(data);
                socketStore.dispatch({
                    type: 'CURRENT_BOARD',
                    payload: data,

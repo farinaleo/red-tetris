@@ -15,11 +15,8 @@ const UserPanel = () => {
         .map((player) => [player.username, player.board]);
 
     const currentPlayer = players.find(player => player.username === username);
-    console.log(currentPlayer);
-    console.log(username, roomName);
     if (currentPlayer) {
         if (currentPlayer.isMaster) {
-            console.log("Im a master");
             return (
                 <div className="user-panel-container">
                     <OpponentSpectrum opponents={opponents}/>

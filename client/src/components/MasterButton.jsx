@@ -9,7 +9,6 @@ const MasterButton = () => {
     const { roomName, username } = useSelector((state) => state.game);
 
     const clickEvent = () => {
-      console.log("CLICK");
       dispatch(StartGame(roomName));
     };
 
