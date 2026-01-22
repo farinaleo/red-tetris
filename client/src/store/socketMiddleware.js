@@ -10,7 +10,7 @@ const socketMiddleware = (navigate) => {
         socketStore = store;
 
         if (!socket) {
-            socket = io('http://10.11.1.3:3004');
+            socket = io('http://10.11.1.1:3004');
 
             socket.on('notify_error', (data) => {
                 toast.error(`${data.topic}: ${data.message}`, {

@@ -23,7 +23,7 @@ const TopBar = ({username, roomName}) => {
                         <span className="logo-red">RED</span><span>-TETRIS</span>
                     </h1>
                 </div>
-                <div className="top-bar-room">Room : {roomName}</div>
+                <div className="top-bar-room">Room: {roomName}</div>
             </div>
         );
     }

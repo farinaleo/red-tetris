@@ -13,7 +13,6 @@ const Game = () => {
     const { roomName, username } = useSelector((state) => state.game);
 
     useEffect(() => {
-        // Récupérer le chemin depuis l'URL
         const path = window.location.pathname.substring(1);
         const segments = path.split('/');
         const currentRoom = segments[0] || 'general';

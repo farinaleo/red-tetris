@@ -33,11 +33,11 @@ const Board = ({boardElements, isSpectrum=false}) => {
         if (!isSpectrum) {
             return `tile ${Colors[element]}`;
         } else {
-          if (element === 0) {
-              return `tile ${Colors[element]}`;
-          } else {
-              return `tile spectrum-gray`;
-          }
+          // if (element === 0) {
+          //     return `tile ${Colors[element]}`;
+          // } else {
+            return `tile spectrum-gray`;
+          // }
         };
     };
 
