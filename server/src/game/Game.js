@@ -20,6 +20,7 @@ class Game {
 
     destroy() {
         clearInterval(this.gameInterval);
+        this.gameInterval = null;
     }
 
     addPlayer(player) {
@@ -56,16 +57,11 @@ class Game {
     }
 
     promoteAMasterIfMissing() {
-        console.log("Promote master");
-        console.log(this.players);
         const masters = this.players.filter(player => player.isMaster);
-        console.log(masters);
         if (!(Array.isArray(masters) && masters.length !== 0)) {
             if (Array.isArray(this.players) && this.players.length !==0) {
-                console.log("Promote master !!!");
                 const firstPlayer = this.players[0];
                 firstPlayer.switchMasterStatus(true);
-                console.log(firstPlayer);
             }
         }
     }
@@ -83,7 +79,6 @@ class Game {
     }
 
     bockRowForOthersPlayers(username) {
-        console.log("Block row");
         this.players.forEach(player => {
             if (player.username !== username) {
                 player.blockARow();
@@ -210,7 +205,6 @@ class Game {
                         this.terminateGame(io);
                     }
                 } catch (error) {
-                    console.log(error);
                     this.terminateGame(io, true);
                 }
             }

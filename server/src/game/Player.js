@@ -225,7 +225,6 @@ class Player {
         const temporaryBoard = this.renderTemporaryBoard();
         io.to(this.socketId).emit('current_board', {board: temporaryBoard});
         if (this.hasElementCollision() && this.currentPiece.x === 0 && this.currentPiece.y === 0) {
-            console.log("Game Over");
             this.changeStatusAndNotify(PlayerStatus.LOST, io);
         }
     }
