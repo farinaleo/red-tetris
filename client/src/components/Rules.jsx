@@ -14,6 +14,13 @@ const Rules = () => {
                 <li>DOWN - Soft move down.</li>
                 <li>SPACE - Hard move down.</li>
             </ul>
+            <h2>Multiplayer?</h2>
+            <ul>
+                <li>First in game? Start it when you want!</li>
+                <li>Be the last in the game to win it!</li>
+                <li>Block the others by winning a row.</li>
+                <li>Track the opponents' progression with the panel.</li>
+            </ul>
         </div>
     );
 };
