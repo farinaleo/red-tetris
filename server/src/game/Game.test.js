@@ -116,14 +116,16 @@ describe('Game', () => {
         expect(game.isGameFinished()).toBe(true);
     });
 
-    test('Set the winner sets the winner status', () => {
+    test('Set the winner status', () => {
         const player1 = new Player('Léo', 'socket123');
         const player2 = new Player('Alice', 'socket456');
         player1.status = PlayerStatus.LOST;
         player2.status = PlayerStatus.PLAYING;
-        game.players.push(player1, player2);
-        game.isMultuPlayers = true;
+        game.players.push(player1);
+        game.players.push(player2);
+        game.isMultyPlayers = true;
         game.setTheWinner(ioMock);
+        expect(game.players[0].status).toBe(PlayerStatus.LOST);
         expect(game.players[1].status).toBe(PlayerStatus.WON);
     });
 

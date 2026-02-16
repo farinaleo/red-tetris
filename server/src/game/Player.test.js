@@ -114,6 +114,8 @@ describe('Player', () => {
 
     test('Has element collision', () => {
         player.currentPiece = new Piece(1);
+        player.currentPiece.x = 0;
+        player.currentPiece.y = 0;
         player.board[0] = Tiles.Z;
         player.board[1] = Tiles.Z;
         player.board[2] = Tiles.Z;
@@ -126,12 +128,12 @@ describe('Player', () => {
 
     test('Has element collision and loose', () => {
         player.currentPiece = new Piece(1);
-        player.board[0] = Tiles.Z;
-        player.board[1] = Tiles.Z;
-        player.board[2] = Tiles.Z;
-        player.board[10] = Tiles.Z;
-        player.board[11] = Tiles.Z;
-        player.board[12] = Tiles.Z;
+        player.board[3] = Tiles.Z;
+        player.board[4] = Tiles.Z;
+        player.board[5] = Tiles.Z;
+        player.board[13] = Tiles.Z;
+        player.board[14] = Tiles.Z;
+        player.board[15] = Tiles.Z;
         const hasCollision = player.hasElementCollision();
         expect(hasCollision).toBe(true);
         player.sendCurrentBoard(ioMock);
@@ -191,6 +193,8 @@ describe('Player', () => {
 
     test('Move current piece with element collision', () => {
         player.currentPiece = new Piece(1);
+        player.currentPiece.x = 0;
+        player.currentPiece.y = 0;
         player.currentPiece.type = piecesArray[0].type;
         player.currentPiece.shape = PiecesShapes[player.currentPiece.type];
         player.needANewPiece = false;

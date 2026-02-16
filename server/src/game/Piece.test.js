@@ -9,7 +9,7 @@ describe('Piece', () => {
         expect(piece.index).toBe(1);
         expect(piecesArray.some(p => p.type === piece.type)).toBeTruthy();
         expect(piece.size).toBeGreaterThan(0);
-        expect(piece.x).toBe(0);
+        expect(piece.x).toBe(3);
         expect(piece.y).toBe(0);
         expect(piece.rotation).toBe(0);
         expect(piece.hardDrop).toBe(false);
