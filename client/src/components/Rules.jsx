@@ -8,11 +8,11 @@ const Rules = () => {
         <div className="rules-container">
             <h1>Rules</h1>
             <ul>
-                <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</li>
-                <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</li>
-                <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</li>
-                <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</li>
-                <li>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</li>
+                <li>LEFT - Move the current piece left.</li>
+                <li>RIGHT - Move the current piece right.</li>
+                <li>UP - Rotate the current piece.</li>
+                <li>DOWN - Soft move down.</li>
+                <li>SPACE - Hard move down.</li>
             </ul>
         </div>
     );

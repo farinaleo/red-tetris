@@ -3,47 +3,29 @@ import { useSelector, useDispatch } from 'react-redux';
 import './UserPanel.css';
 import OpponentSpectrum from "./OpponentsSpectrum.jsx";
 import Rules from "./Rules.jsx";
+import MasterButton from "./MasterButton.jsx"
 
 const UserPanel = () => {
 
     const dispatch = useDispatch();
-    const {username, users = [] } = useSelector((state) => state.game);
+    const { roomName, username, players = [] } = useSelector((state) => state.game);
 
-    const elems = [
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 3, 0, 0, 0, 0, 0, 0,
-        0, 0, 0, 3, 3, 0, 0, 0, 0, 0,
-        0, 0, 0, 3, 2, 2, 0, 0, 0, 0,
-        1, 1, 1, 1, 2, 2, 0, 0, 0, 0,
-    ]
+    const opponents = players
+        .filter((player) => player.username !== username)
+        .map((player) => [player.username, player.board]);
 
-    // const opponents = [
-    //     ["username", elems],
-    //     ["adsad", elems],
-    //     ["wqeqwe", elems],
-    //     ["qwwww", elems],
-    //     ["4234", elems],
-    // ];
-
-    const opponents = users
-        .filter((user) => user.username !== username)
-        .map((user) => [user.username, elems]);
-
+    const currentPlayer = players.find(player => player.username === username);
+    if (currentPlayer) {
+        if (currentPlayer.isMaster) {
+            return (
+                <div className="user-panel-container">
+                    <OpponentSpectrum opponents={opponents}/>
+                    <MasterButton />
+                    <Rules />
+                </div>
+            )
+        }
+    }
 
     return (
         <div className="user-panel-container">
