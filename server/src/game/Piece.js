@@ -1,6 +1,8 @@
 const {piecesArray, PiecesShapes} = require('../enums/Pieces.js');
 
 let lastPieceIndex = 0;
+const X_ORIGIN = 3;
+const Y_ORIGIN = 0;
 
 class Piece {
     constructor(index) {
@@ -17,8 +19,8 @@ class Piece {
         this.type = selectedPiece.type;
         this.size = selectedPiece.size;
         this.shape = PiecesShapes[this.type];
-        this.x = 0;
-        this.y = 0;
+        this.x = X_ORIGIN;
+        this.y = Y_ORIGIN;
         this.rotation = 0;
         this.hardDrop = false;
 
@@ -42,6 +44,10 @@ class Piece {
 
     getShape() {
         return this.shape[this.rotation];
+    }
+
+    isAtOrigin() {
+        return this.x === X_ORIGIN && this.y === Y_ORIGIN;
     }
 }
 
