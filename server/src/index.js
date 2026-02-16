@@ -7,7 +7,7 @@ const http = require('http');
 const socketIo = require('socket.io');
 const path = require('path');
 const {PlayerEvents} = require("./enums/PlayerEvents");
-require('dotenv').config(); // Load environment variables from .env
+require('dotenv').config();
 
 
 const app = express();
@@ -50,11 +50,11 @@ io.on('connection', (socket) => {
 
         if (currentGame.usernameExists(username)) {
             console.log('error redirect username used');
-            sendErrorRedirection(io, socket.id, 'Username', 'Username already used.');
+            sendErrorRedirection(io, socket.id, 'Connexion', 'Username already used.');
             return ;
         } else if (currentGame.status === GameStatus.STARTED) {
             console.log('error game started...');
-            sendErrorRedirection(io, socket.id, 'Game', 'Can t join, a game is running.');
+            sendErrorRedirection(io, socket.id, 'Game', 'Cant join, the game is running.');
             return ;
         } else {
             const player = new Player(username, socket.id);
@@ -62,7 +62,6 @@ io.on('connection', (socket) => {
             socket.join(roomName);
 
             console.log(roomName + ' new user : ' + username);
-            sendErrorNotification(io, socket.id, 'test', 'test error 1 2 1 2')
             currentGame.sendUpdatedPlayersList(io);
             currentGame.sendGameStatus(io);
         }
@@ -95,7 +94,7 @@ io.on('connection', (socket) => {
                     currentGame.gameLoop(io);
                 }
            } else {
-               sendErrorNotification(io, socket.id, 'Player status', 'you are not the master.')
+               sendErrorNotification(io, socket.id, 'Player status', 'You are not the master.')
            }
        }
     });
