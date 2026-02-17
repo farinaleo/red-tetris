@@ -177,8 +177,14 @@ class Player {
         if (!this.needANewPeice) {
             const hasReachBottom = this.moveCurrentPiece(direction.x, direction.y, direction.rotation);
             if (hasReachBottom) {
-                this.lockThePiece();
-                event.hasReachBottom = true;
+                this.currentPiece.setPlacedTime();
+                if ((this.currentPiece.isPlaced() && this.currentPiece.isPlacedTimeExpired())
+                || this.currentPiece.hardDrop) {
+                    this.lockThePiece();
+                    event.hasReachBottom = true;
+                }
+            } else if (direction.y !== 0) {
+                this.currentPiece.resetPlacedTime();
             }
             event.blockedRow = this.countCompletedRows();
         }

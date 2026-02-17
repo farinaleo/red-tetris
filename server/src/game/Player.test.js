@@ -82,6 +82,7 @@ describe('Player', () => {
 
     test('Move hard drop to bottom', () => {
         player.currentPiece = new Piece(1);
+        player.setHardDrop();
         let event;
         for (let i = 0; i < 20; i++) {
             event = player.moveCurrentPieceWrapper({x:0, y:1, rotation:0});
