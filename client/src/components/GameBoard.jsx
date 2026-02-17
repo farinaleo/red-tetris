@@ -9,6 +9,11 @@ const GameBoard = () => {
     const dispatch = useDispatch();
     const { game_status, next_piece, current_board } = useSelector((state) => state.game);
 
+    /**
+     * Get the current css class according to the game status.
+     * @param gameStatus The game status.
+     * @returns {string} The selected class.
+     */
     const getGameStatusCss = (gameStatus) => {
         if (gameStatus === 'WAITING') {
             return 'game-board-status waiting';
