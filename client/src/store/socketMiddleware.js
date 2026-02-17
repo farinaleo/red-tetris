@@ -12,6 +12,7 @@ const socketMiddleware = (navigate) => {
         if (!socket) {
             socket = io('http://10.11.1.1:3004');
 
+            // Show notification for errors
             socket.on('notify_error', (data) => {
                 toast.error(`${data.topic}: ${data.message}`, {
                     position: "top-right",
@@ -24,6 +25,7 @@ const socketMiddleware = (navigate) => {
                 });
             });
 
+            // Show notification when a user enter the game.
             socket.on('player_status', (data) => {
                 toast.info(`Game status: ${StatusMessages[data.status]}`, {
                     position: "top-right",
@@ -36,6 +38,7 @@ const socketMiddleware = (navigate) => {
                 });
             });
 
+            // Show a notification for error and redirect the client to the main page (/)
             socket.on('redirect_error', (data) => {
                 if (navigate) {
                     navigate('/');
@@ -51,6 +54,7 @@ const socketMiddleware = (navigate) => {
                 });
             });
 
+            // Update the players info (boards, username, status)
             socket.on('update_players', (players) => {
                 socketStore.dispatch({
                     type: 'UPDATE_PLAYERS',
@@ -58,6 +62,7 @@ const socketMiddleware = (navigate) => {
                 });
             });
 
+            // Update the game status (playing, pending, ...)
             socket.on('game_status', (data) => {
                 socketStore.dispatch({
                     type: 'GAME_STATUS',
@@ -65,6 +70,7 @@ const socketMiddleware = (navigate) => {
                 });
             });
 
+            // Update the next piece to play.
             socket.on('next_piece', (data) => {
                 socketStore.dispatch({
                     type: 'NEXT_PIECE',
@@ -72,6 +78,7 @@ const socketMiddleware = (navigate) => {
                 });
             });
 
+            // Update the current board to render.
             socket.on('current_board', (data) => {
                socketStore.dispatch({
                    type: 'CURRENT_BOARD',

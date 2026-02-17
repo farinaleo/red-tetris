@@ -10,6 +10,11 @@ const NextPiece = ({pieceName}) => {
     useEffect(() => {
     }, []);
 
+    /**
+     * Get the tile css class according to the element type.
+     * @param element The tile element.
+     * @returns {`next-piece-tile ${*}`} The selected class.
+     */
     const getClassName = (element) => {
         return `next-piece-tile ${Colors[element]}`;
     };

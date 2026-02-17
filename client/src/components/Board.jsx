@@ -6,6 +6,11 @@ import Colors from '../types/enums/colors.jsx';
 
 const Board = ({boardElements, isSpectrum=false}) => {
 
+    /**
+     * Get the correct background css style for the given index.
+     * @param index The tile index.
+     * @returns {string} the selected class.
+     */
     const getBgClassName = (index) => {
         const tileY = Math.floor(index / 10);
         const tileX = index % 10;
@@ -24,7 +29,14 @@ const Board = ({boardElements, isSpectrum=false}) => {
         }
     };
 
-
+    /**
+     * Get the correct css class for the given element.
+     * if the element is an empty tile, the function calls getBgClassName
+     * to form a checkerboard.
+     * @param element The tile type.
+     * @param index The tile index.
+     * @returns {string} The selected class.
+     */
     const getClassName = (element, index) => {
         if (element === 0) {
             return getBgClassName(index);

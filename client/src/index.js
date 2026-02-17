@@ -23,6 +23,7 @@ const AppWithNavigate = () => {
             getDefaultMiddleware().concat(socketMiddlewareWithNavigate),
     });
 
+    // Protect code from nonvalid path.
     useEffect(() => {
         const pathParts = location.pathname.split('/').filter(Boolean);
         if (pathParts.length !== 2) {

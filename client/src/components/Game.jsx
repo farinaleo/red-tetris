@@ -13,13 +13,16 @@ const Game = () => {
     const { roomName, username } = useSelector((state) => state.game);
 
     useEffect(() => {
+        // Get the current path and split it to for the roomName and username.
         const path = window.location.pathname.substring(1);
         const segments = path.split('/');
         const currentRoom = segments[0] || 'general';
         const currentUsername = segments[1] || 'anonymous';
 
-
+        // Join the current roomName with socket.
         dispatch(joinRoom(currentRoom, currentUsername));
+
+        // Manage keys events for tiles movements.
         const handleKeyDown = (event) => {
             if (event.key === 'ArrowUp') {
                 dispatch(movePiece(Movements.ROTATE));

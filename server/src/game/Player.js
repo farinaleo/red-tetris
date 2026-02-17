@@ -4,7 +4,16 @@ const {Movements, MovementsPositions} = require("../enums/Movements");
 const {PlayerStatus} = require("../enums/PlayerStatus");
 const {PlayerEvents} = require("../enums/PlayerEvents");
 
+/**
+ * Player class.
+ */
 class Player {
+
+    /**
+     * Initialise the player with its username and socket id.
+     * @param username Player username.
+     * @param socketId Player socket id.
+     */
     constructor(username, socketId) {
         this.username = username;
         this.socketId = socketId;
@@ -20,6 +29,9 @@ class Player {
         this.level = 0;
     }
 
+    /**
+     * Reset the player after a game.
+     */
     reset() {
         this.status = PlayerStatus.WAITING;
         this.board = Array.from({ length: 10 * 20 }, (_, index) => Tiles.EMPTY);
@@ -32,24 +44,45 @@ class Player {
         this.level = 0;
     }
 
+    /**
+     * Set the initialTime with the passed one.
+     * @param initialTime Initial time.
+     */
     setInitialTime(initialTime) {
         this.updatedTime = initialTime;
     }
 
+    /**
+     * Set the initialSpeed.
+     * @param speed Initial speed.
+     */
     setInitialSpeed(speed) {
         this.speed = speed;
     }
 
+    /**
+     * Set the initial pieces to play.
+     * @param piece First piece to play.
+     * @param nextPiece Second piece to play.
+     */
     setInitialPieces(piece, nextPiece) {
         this.currentPiece = piece;
         this.nextPiece = nextPiece;
         this.pieceId = 1;
     }
 
+    /**
+     * Set hardDrop.
+     */
     setHardDrop() {
         this.currentPiece.hardDrop = true;
     }
 
+    /**
+     * Set a new piece to use.
+     * @param piece The new piece element.
+     * @param pieceId The new piece id.
+     */
     newPiece(piece, pieceId) {
         this.currentPiece = this.nextPiece;
         this.nextPiece = piece;
@@ -57,10 +90,19 @@ class Player {
         this.needANewPiece = false;
     }
 
+    /**
+     * Switch player status to master.
+     * @param status
+     */
     switchMasterStatus(status) {
         this.isMaster = status;
     }
 
+    /**
+     * Change player status and send a notification.
+     * @param newStatus The new status.
+     * @param io The socket io.
+     */
     changeStatusAndNotify(newStatus, io) {
         if (this.status !== newStatus)  {
             this.status = newStatus;
@@ -68,6 +110,10 @@ class Player {
         }
     }
 
+    /**
+     * Check if the current movement induce collisions with placed elements.
+     * @returns {*}
+     */
     hasElementCollision() {
         return this.currentPiece.getShape().some((element, index) => {
             if (element !== Tiles.EMPTY) {
@@ -81,6 +127,10 @@ class Player {
         });
     }
 
+    /**
+     * Check if the current movement induce collisions on the X axis with walls and elements.
+     * @returns {*}
+     */
     hasCollisionX() {
         return this.currentPiece.getShape().some((element, index) => {
             if (element !== Tiles.EMPTY) {
@@ -93,6 +143,10 @@ class Player {
         });
     }
 
+    /**
+     * Check if the current movement induce collisions on the Y axis with walls and elements.
+     * @returns {*}
+     */
     hasCollisionY() {
         return this.currentPiece.getShape().some((element, index) => {
             if (element !== Tiles.EMPTY) {
@@ -105,10 +159,19 @@ class Player {
         });
     }
 
+    /**
+     * Check if the given row is completed.
+     * @param row The row to check.
+     * @returns {*}
+     */
     isRowCompleted(row) {
         return row.every(element => element !== Tiles.EMPTY && element !== Tiles.BLOCKED);
     }
 
+    /**
+     * Count the number of completed rows.
+     * @returns {number}
+     */
     countCompletedRows() {
         let completedRows = 0;
         for (let y = 0; y < 20; y++) {
@@ -119,6 +182,9 @@ class Player {
         return completedRows;
     }
 
+    /**
+     * Delete completed row.
+     */
     deleteACompletedRow() {
         for (let y = 0; y < 20; y++) {
             if (this.isRowCompleted(this.board.slice(y * 10, (y + 1) * 10))) {
@@ -133,10 +199,18 @@ class Player {
         }
     }
 
+    /**
+     * Check if the given row is blocked.
+     * @param row The row to check.
+     * @returns {*}
+     */
     isRowBlocked(row) {
         return row.every(element => element === Tiles.BLOCKED);
     }
 
+    /**
+     * Block a row.
+     */
     blockARow() {
         for (let y = 19; y >= 0; y--) {
             if (!this.isRowBlocked(this.board.slice(y * 10, (y + 1) * 10))) {
@@ -150,6 +224,15 @@ class Player {
         }
     }
 
+    /**
+     * Apply a movement to the current piece. If the required movement induce collisions
+     * the mvt is adapted.
+     * DO NOT USE DIRECTLY !!! CALL THE moveCurrentPieceWrapper FUNCTION !!!
+     * @param x Number of column to move (expected from -1 to 1).
+     * @param y Number of row to move (expected from -1 to 1).
+     * @param rotation Rotation direction (expected from -1 to 1).
+     * @returns {boolean} return true if the current piece reach the bottom.
+     */
     moveCurrentPiece(x = 0, y = 0, rotation = 0) {
         if (this.currentPiece.hardDrop === true) {
             x = 0;
@@ -172,11 +255,22 @@ class Player {
         return false;
     }
 
+    /**
+     * Wrapper to move the current piece and handle last movements.
+     * @param direction The direction to apply.
+     * @returns {{hasReachBottom: boolean, blockedRow: number}} Map with boolean
+     * to indicate if the current piece has reach the bottom and the number of blocked rows.
+     */
     moveCurrentPieceWrapper(direction) {
         let event = {hasReachBottom: false, blockedRow: 0};
+
+        // Only manage mvt when piece is not placed
         if (!this.needANewPeice) {
             const hasReachBottom = this.moveCurrentPiece(direction.x, direction.y, direction.rotation);
             if (hasReachBottom) {
+
+                // Handle the last half sec to move the piece when it reaches the bottom of the board.
+                // This logic is not apply during hard drop.
                 this.currentPiece.setPlacedTime();
                 if ((this.currentPiece.isPlaced() && this.currentPiece.isPlacedTimeExpired())
                 || this.currentPiece.hardDrop) {
@@ -191,6 +285,9 @@ class Player {
         return event;
     };
 
+    /**
+     * Lock the current piece, in the board, to its place and ask for a new one.
+     */
     lockThePiece() {
         this.currentPiece.getShape().forEach((element, index) => {
             if (element !== Tiles.EMPTY) {
@@ -203,6 +300,10 @@ class Player {
         this.needANewPiece = true;
     }
 
+    /**
+     * Render the temporary board with the moving piece.
+     * @returns {unknown[]}
+     */
     renderTemporaryBoard() {
         const temporaryBoard = Array.from(this.board);
         if (!this.needANewPiece) {
@@ -218,6 +319,11 @@ class Player {
         return temporaryBoard;
     }
 
+    /**
+     * Handle periodic movement down.
+     * @returns {{hasReachBottom: boolean, blockedRow: number}} Map with boolean
+     * to indicate if the current piece has reach the bottom and the number of blocked rows.
+     */
     periodicMovementDown() {
         let event = {hasReachBottom: false, blockedRow: 0};
         if (Date.now() - this.updatedTime >= this.speed.speed) {
@@ -227,6 +333,10 @@ class Player {
         return event;
     }
 
+    /**
+     * Send the current board, with the moving piece, to the player.
+     * @param io The socket io.
+     */
     sendCurrentBoard(io) {
         const temporaryBoard = this.renderTemporaryBoard();
         io.to(this.socketId).emit('current_board', {board: temporaryBoard});
@@ -235,10 +345,18 @@ class Player {
         }
     }
 
+    /**
+     * Send the next piece to the player.
+     * @param io The socket io.
+     */
     sendNextPiece(io) {
         io.to(this.socketId).emit('next_piece', {piece: this.nextPiece});
     }
 
+    /**
+     * Send the player status.
+     * @param io The socket io.
+     */
     sendPlayerStatus(io) {
         io.to(this.socketId).emit('player_status', {status: this.status});
     }

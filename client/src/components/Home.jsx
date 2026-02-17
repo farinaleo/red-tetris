@@ -16,6 +16,7 @@ const Home = () => {
     const isAlphanumeric = (str) => /^[a-zA-Z0-9]+$/.test(str);
 
 
+    // Check the inputs content and return an error or navigate to the right room.
     const handleJoinRoom = () => {
         if (!username || !roomName) {
             toast.error(`Connexion: Please enter both username and room name.`, {
