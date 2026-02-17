@@ -23,6 +23,7 @@ class Piece {
         this.y = Y_ORIGIN;
         this.rotation = 0;
         this.hardDrop = false;
+        this.placedTime = null;
 
         lastPieceIndex = randomIndex;
     }
@@ -49,6 +50,25 @@ class Piece {
     isAtOrigin() {
         return this.x === X_ORIGIN && this.y === Y_ORIGIN;
     }
+
+    setPlacedTime() {
+        if (this.placedTime === null) {
+            this.placedTime = Date.now();
+        }
+    }
+
+    resetPlacedTime() {
+        this.placedTime == null;
+    }
+
+    isPlaced() {
+        return this.placedTime !== null;
+    }
+
+    isPlacedTimeExpired() {
+        return Date.now() - this.placedTime > 500;
+    }
+
 }
 
 module.exports = {Piece};
