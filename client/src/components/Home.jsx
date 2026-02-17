@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import './Game.css';
 import './Home.css';
 import GameBoard from './GameBoard.jsx';
@@ -12,14 +13,37 @@ const Home = () => {
     const navigate = useNavigate();
     const [username, setUsername] = useState('');
     const [roomName, setRoomName] = useState('');
+    const isAlphanumeric = (str) => /^[a-zA-Z0-9]+$/.test(str);
+
 
     const handleJoinRoom = () => {
-        if (username && roomName) {
-            navigate(`/${roomName}/${username}`);
-        } else {
-            alert('Please enter both username and room name.');
+        if (!username || !roomName) {
+            toast.error(`Connexion: Please enter both username and room name.`, {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+            return;
         }
+        if (!isAlphanumeric(username) || !isAlphanumeric(roomName)) {
+            toast.error(`Connexion: Username and room name must be alphanumeric (only letters and numbers, no spaces or special characters).`, {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+            });
+            return;
+        }
+        navigate(`/${roomName}/${username}`);
     };
+
 
     return (
         <div className="window-wrapper">
