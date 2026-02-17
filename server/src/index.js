@@ -38,10 +38,19 @@ function sendErrorRedirection(io, roomName, topic, message) {
     io.to(roomName).emit('redirect_error', {topic:topic, message:message});
 }
 
+function isAlphanumeric(string) {
+    return /^[a-zA-Z0-9]+$/.test(string);
+}
+
 io.on('connection', (socket) => {
     console.log('Say hi to a new user !!');
 
     socket.on('join', ({ roomName, username }) => {
+        if (!isAlphanumeric(username) || !isAlphanumeric(roomName)) {
+            sendErrorRedirection(io, socket.id, 'Connexion', 'Username and room name must be alphanumeric (only letters and numbers, no spaces or special characters).');
+            return ;
+        }
+
         if (!games.has(roomName)) {
             games.set(roomName, new Game(roomName));
         }
