@@ -29,6 +29,8 @@ describe('Piece', () => {
 
     test('Update coordinates should update x, y, and rotation', () => {
         piece = new Piece(1);
+        piece.type = piecesArray['1'].type;
+        piece.shape = PiecesShapes[piece.type];
         piece.updateCoordinates(5, 10, 1);
         expect(piece.x).toBe(5);
         expect(piece.y).toBe(10);

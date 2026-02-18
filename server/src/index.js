@@ -12,7 +12,7 @@ const {PlayerEvents} = require("./enums/PlayerEvents");
 
 const app = express();
 const server = http.createServer(app);
-const allowedOrigins = process.env.CORS_ORIGINS.split(',');
+const allowedOrigins = (process.env.CORS_ORIGINS || '').split(',');
 
 // INIT
 const io = socketIo(server, {
@@ -166,3 +166,5 @@ const PORT = process.env.SERVER_PORT;
 server.listen(PORT, '0.0.0.0', () => {
     console.log(`Server running on http://localhost:${PORT}`);
 });
+
+module.exports = { app, server };

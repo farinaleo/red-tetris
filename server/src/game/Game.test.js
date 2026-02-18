@@ -169,11 +169,76 @@ describe('Game', () => {
         expect(player.currentPiece.hardDrop).toBe(true);
     });
 
-    test('Update speed updates the game speed based on player levels', () => {
+    test('Update speed updates the game speed based on player levels 550', () => {
         const player = new Player('Léo', 'socket123');
         player.level = 15;
         game.players.push(player);
         game.updateSpeed();
         expect(game.speed.speed).toBe(550);
     });
+
+    test("Change speed to 400", () => {
+        const player = new Player('Léo', 'socket123');
+        player.level = 21;
+        game.players.push(player);
+        game.updateSpeed();
+        expect(game.speed.speed).toBe(400);
+    });
+
+    test("Change speed to 1000", () => {
+        const player = new Player('Léo', 'socket123');
+        player.level = 4;
+        game.players.push(player);
+        game.updateSpeed();
+        expect(game.speed.speed).toBe(1000);
+    });
+
+    test("Change speed to 850", () => {
+        const player = new Player('Léo', 'socket123');
+        player.level = 6;
+        game.players.push(player);
+        game.updateSpeed();
+        expect(game.speed.speed).toBe(850);
+    });
+
+    test("Change speed to 700", () => {
+        const player = new Player('Léo', 'socket123');
+        player.level = 12;
+        game.players.push(player);
+        game.updateSpeed();
+        expect(game.speed.speed).toBe(700);
+    });
+
+
+    test("single player logic ask for a new piece", async () => {
+        const player = new Player('Léo', 'socket123');
+        player.status = PlayerStatus.PLAYING;
+        player.needANewPiece = true;
+        game.players.push(player);
+        game.initiatePlayers(ioMock);
+        const event = await game.singlePlayerGameLogic(ioMock, player);
+        expect(player.needANewPiece).toBe(false);
+    });
+
+    test("single player logic", async () => {
+        const player = new Player('Léo', 'socket123');
+        player.status = PlayerStatus.PLAYING;
+        game.players.push(player);
+        game.initiatePlayers(ioMock);
+        player.board = [
+            ...Array.from({ length: 10 * 19 }, (_, index) => Tiles.EMPTY),
+            ...Array.from({ length: 10 * 1 }, (_, index) => Tiles.I)
+        ]
+        let event;
+        for (let i = 0; i < 20; i++) {
+            event = await game.singlePlayerGameLogic(ioMock, player);
+            if (event.hasReachBottom || event.blockedRow !== 0) {
+                console.log('out');
+                break;
+            }
+        }
+        expect(event.blockedRow).toBe(0);
+    });
+
+
 });
