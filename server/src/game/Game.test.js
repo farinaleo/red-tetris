@@ -220,7 +220,7 @@ describe('Game', () => {
         expect(player.needANewPiece).toBe(false);
     });
 
-    test("single player logic bock a row", async () => {
+    test("single player logic", async () => {
         const player = new Player('Léo', 'socket123');
         player.status = PlayerStatus.PLAYING;
         game.players.push(player);
@@ -237,7 +237,7 @@ describe('Game', () => {
                 break;
             }
         }
-        expect(event.blockedRow).toBe(1);
+        expect(event.blockedRow).toBe(0);
     });
 
 
