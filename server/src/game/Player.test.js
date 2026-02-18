@@ -80,7 +80,7 @@ describe('Player', () => {
         expect(hasReachBottom).toBe(true);
     });
 
-    test('Move hard drop to bottom', () => {
+    test('Move hard drop to bottom 1', () => {
         player.currentPiece = new Piece(1);
         player.setHardDrop();
         let event;
