@@ -1,0 +1,24 @@
+services:
+  client:
+    build: ./client
+    env_file: .env
+    ports:
+      - "8080:8080"
+    depends_on:
+      - server
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+#    environment:
+#      - NODE_ENV=development
+
+  server:
+    build: ./server
+    env_file: .env
+    ports:
+      - "3004:3004"
+    volumes:
+      - ./server:/app
+      - /app/node_modules
+#    environment:
+#      - NODE_ENV=development

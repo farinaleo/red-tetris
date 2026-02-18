@@ -7,7 +7,7 @@ const http = require('http');
 const socketIo = require('socket.io');
 const path = require('path');
 const {PlayerEvents} = require("./enums/PlayerEvents");
-require('dotenv').config();
+// require('dotenv').config();
 
 
 const app = express();
@@ -17,7 +17,7 @@ const allowedOrigins = process.env.CORS_ORIGINS.split(',');
 // INIT
 const io = socketIo(server, {
     cors: {
-        origin: allowedOrigins,
+        origin: "*",
         methods: ["GET", "POST"]
     }
 });
@@ -163,6 +163,6 @@ io.on('connection', (socket) => {
 
 // Démarrer le serveur
 const PORT = process.env.SERVER_PORT;
-server.listen(PORT, () => {
+server.listen(PORT, '0.0.0.0', () => {
     console.log(`Server running on http://localhost:${PORT}`);
 });

@@ -10,7 +10,7 @@ const socketMiddleware = (navigate) => {
         socketStore = store;
 
         if (!socket) {
-            socket = io('http://10.11.1.1:3004');
+            socket = io(process.env.REACT_APP_SOCKET_SERVER_URL);
 
             // Show notification for errors
             socket.on('notify_error', (data) => {

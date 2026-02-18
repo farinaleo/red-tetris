@@ -9,7 +9,9 @@
     "start:server": "node server/src/index.js",
     "start:client": "webpack serve --mode development",
     "build:client": "webpack --mode production",
-    "start": "concurrently \"npm run start:server\" \"npm run start:client\""
+    "start": "concurrently \"npm run start:server\" \"npm run start:client\"",
+    "docker:up": "docker-compose up --build",
+    "docker:down": "docker-compose down"
   },
   "repository": {
     "type": "git",
@@ -34,6 +36,7 @@
     "react-dom": "^19.2.1",
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.12.0",
+    "react-scripts": "^5.0.1",
     "react-toastify": "^11.0.5",
     "redux": "^5.0.1",
     "socket.io": "^4.8.1",
