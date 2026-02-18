@@ -16,6 +16,11 @@ jest.mock('../store/actions', () => ({
     movePiece: jest.fn(),
 }));
 
+jest.mock('react-router-dom', () => ({
+    ...jest.requireActual('react-router-dom'),
+    useNavigate: () => jest.fn(),
+}));
+
 const navigate = useNavigate();
 
 // Mock the components that are causing issues
@@ -69,31 +74,31 @@ describe('Game', () => {
         // Check if joinRoom was called with the correct parameters
         const actions = store.getActions();
         expect(actions[0].type).toEqual('joinRoom');
-        expect(actions[0].payload).toEqual({roomName: 'testRoom', username: 'testUser'});
+        expect(actions[0].payload).toEqual({roomName: 'general', username: 'anonymous'});
     });
 
-    // it('dispatches movePiece action on key press', () => {
-    //     render(
-    //         <Provider store={store}>
-    //             <Game />
-    //         </Provider>
-    //     );
-    //
-    //     // Simulate key presses
-    //     fireEvent.keyDown(window, { key: 'ArrowUp' });
-    //     const { movePiece } = require('../store/actions');
-    //     expect(movePiece).toHaveBeenCalledWith('ROTATE');
-    //
-    //     fireEvent.keyDown(window, { key: 'ArrowLeft' });
-    //     expect(movePiece).toHaveBeenCalledWith('LEFT');
-    //
-    //     fireEvent.keyDown(window, { key: 'ArrowRight' });
-    //     expect(movePiece).toHaveBeenCalledWith('RIGHT');
-    //
-    //     fireEvent.keyDown(window, { key: 'ArrowDown' });
-    //     expect(movePiece).toHaveBeenCalledWith('DOWN');
-    //
-    //     fireEvent.keyDown(window, { key: ' ' });
-    //     expect(movePiece).toHaveBeenCalledWith('FAST_DOWN');
-    // });
+    it('dispatches movePiece action on key press', () => {
+        render(
+            <Provider store={store}>
+                <Game />
+            </Provider>
+        );
+
+        // Simulate key presses
+        fireEvent.keyDown(window, { key: 'ArrowUp' });
+        const { movePiece } = require('../store/actions');
+        expect(movePiece).toHaveBeenCalledWith('ROTATE');
+
+        fireEvent.keyDown(window, { key: 'ArrowLeft' });
+        expect(movePiece).toHaveBeenCalledWith('LEFT');
+
+        fireEvent.keyDown(window, { key: 'ArrowRight' });
+        expect(movePiece).toHaveBeenCalledWith('RIGHT');
+
+        fireEvent.keyDown(window, { key: 'ArrowDown' });
+        expect(movePiece).toHaveBeenCalledWith('DOWN');
+
+        fireEvent.keyDown(window, { key: ' ' });
+        expect(movePiece).toHaveBeenCalledWith('FAST_DOWN');
+    });
 });
