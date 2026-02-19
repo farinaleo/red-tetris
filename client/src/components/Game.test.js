@@ -13,8 +13,12 @@ jest.mock('../store/actions', () => ({
         type: 'joinRoom',
         payload: {roomName, username},
     })),
-    movePiece: jest.fn(),
+    movePiece: jest.fn((direction) => ({
+        type: 'MOVE_PIECE',
+        payload: { direction },
+    })),
 }));
+
 
 jest.mock('react-router-dom', () => ({
     ...jest.requireActual('react-router-dom'),
@@ -86,19 +90,20 @@ describe('Game', () => {
 
         // Simulate key presses
         fireEvent.keyDown(window, { key: 'ArrowUp' });
-        const { movePiece } = require('../store/actions');
-        expect(movePiece).toHaveBeenCalledWith('ROTATE');
+        const actions = store.getActions();
+        expect(actions.some(action => action.type === 'MOVE_PIECE' && action.payload.direction === 'ROTATE')).toBe(true);
 
         fireEvent.keyDown(window, { key: 'ArrowLeft' });
-        expect(movePiece).toHaveBeenCalledWith('LEFT');
+        expect(actions.some(action => action.type === 'MOVE_PIECE' && action.payload.direction === 'LEFT')).toBe(true);
 
         fireEvent.keyDown(window, { key: 'ArrowRight' });
-        expect(movePiece).toHaveBeenCalledWith('RIGHT');
+        expect(actions.some(action => action.type === 'MOVE_PIECE' && action.payload.direction === 'RIGHT')).toBe(true);
 
         fireEvent.keyDown(window, { key: 'ArrowDown' });
-        expect(movePiece).toHaveBeenCalledWith('DOWN');
+        expect(actions.some(action => action.type === 'MOVE_PIECE' && action.payload.direction === 'DOWN')).toBe(true);
 
         fireEvent.keyDown(window, { key: ' ' });
-        expect(movePiece).toHaveBeenCalledWith('FAST_DOWN');
+        expect(actions.some(action => action.type === 'MOVE_PIECE' && action.payload.direction === 'FAST_DOWN')).toBe(true);
     });
+
 });
