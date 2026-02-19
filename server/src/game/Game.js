@@ -326,7 +326,7 @@ class Game {
                     this.terminateGame(io, true);
                 }
             }
-        }, 10);
+        }, 300);
     }
 
 }

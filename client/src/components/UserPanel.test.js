@@ -69,4 +69,5 @@ describe('UserPanel Component', () => {
         expect(screen.getByTestId('opponents-spectrum')).toBeInTheDocument();
         expect(screen.getByTestId('rules')).toBeInTheDocument();
     });
+
 });
