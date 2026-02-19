@@ -1,84 +1,97 @@
-// // import { TextEncoder, TextDecoder } from 'util';
-// //
-// // // Add these to the global scope
-// // global.TextEncoder = TextEncoder;
-// // global.TextDecoder = TextDecoder;
-//
-// import React from 'react';
-//
-// import { render, screen, fireEvent } from '@testing-library/react';
-// import Home from './Home';
-// // import { useNavigate } from 'react-router-dom';
-//
-// // // Mock the useNavigate hook
-// // jest.mock('react-router-dom', () => ({
-// //     ...jest.requireActual('react-router-dom'),
-// //     useNavigate: jest.fn(),
-// // }));
-//
-// describe('Home Component', () => {
-//     beforeEach(() => {
-//         // Clear all mocks before each test
-//         jest.clearAllMocks();
-//     });
-//
-//     test('renders Home component', () => {
-//         render(<Home />);
-//         expect(screen.getByPlaceholderText('ENTER YOUR USERNAME')).toBeInTheDocument();
-//         expect(screen.getByPlaceholderText('ENTER A ROOM NAME')).toBeInTheDocument();
-//         expect(screen.getByText('JOIN ROOM')).toBeInTheDocument();
-//     });
-//
-//     test('updates username and roomName state on input change', () => {
-//         render(<Home />);
-//         const usernameInput = screen.getByPlaceholderText('ENTER YOUR USERNAME');
-//         const roomNameInput = screen.getByPlaceholderText('ENTER A ROOM NAME');
-//
-//         fireEvent.change(usernameInput, { target: { value: 'testUser' } });
-//         fireEvent.change(roomNameInput, { target: { value: 'testRoom' } });
-//
-//         expect(usernameInput.value).toBe('testUser');
-//         expect(roomNameInput.value).toBe('testRoom');
-//     });
-//
-//     test('navigates to the correct route when both fields are filled', () => {
-//         const mockNavigate = jest.fn();
-//         useNavigate.mockReturnValue(mockNavigate);
-//
-//         render(<Home />);
-//         const usernameInput = screen.getByPlaceholderText('ENTER YOUR USERNAME');
-//         const roomNameInput = screen.getByPlaceholderText('ENTER A ROOM NAME');
-//         const joinButton = screen.getByText('JOIN ROOM');
-//
-//         fireEvent.change(usernameInput, { target: { value: 'testUser' } });
-//         fireEvent.change(roomNameInput, { target: { value: 'testRoom' } });
-//         fireEvent.click(joinButton);
-//
-//         expect(mockNavigate).toHaveBeenCalledWith('/testRoom/testUser');
-//     });
-//
-//     test('shows alert when either field is empty', () => {
-//         // Mock the alert function
-//         const mockAlert = jest.spyOn(window, 'alert').mockImplementation(() => {});
-//
-//         render(<Home />);
-//         const usernameInput = screen.getByPlaceholderText('ENTER YOUR USERNAME');
-//         const roomNameInput = screen.getByPlaceholderText('ENTER A ROOM NAME');
-//         const joinButton = screen.getByText('JOIN ROOM');
-//
-//         // Test with empty username
-//         fireEvent.change(usernameInput, { target: { value: '' } });
-//         fireEvent.change(roomNameInput, { target: { value: 'testRoom' } });
-//         fireEvent.click(joinButton);
-//         expect(mockAlert).toHaveBeenCalledWith('Please enter both username and room name.');
-//
-//         // Test with empty room name
-//         fireEvent.change(usernameInput, { target: { value: 'testUser' } });
-//         fireEvent.change(roomNameInput, { target: { value: '' } });
-//         fireEvent.click(joinButton);
-//         expect(mockAlert).toHaveBeenCalledWith('Please enter both username and room name.');
-//
-//         // Clean up the mock
-//         mockAlert.mockRestore();
-//     });
-// });
+import React from 'react';
+import { render, screen, fireEvent } from '@testing-library/react';
+import '@testing-library/jest-dom';
+import { Provider } from 'react-redux';
+import configureMockStore from 'redux-mock-store';
+import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import Home from './Home';
+
+jest.mock('react-router-dom', () => ({
+    useNavigate: jest.fn(),
+}));
+
+jest.mock('react-toastify', () => ({
+    toast: {
+        error: jest.fn(),
+    },
+}));
+
+jest.mock('./TopBar.jsx', () => () => <div>TopBar Mock</div>);
+jest.mock('./GameBoard.jsx', () => () => <div>GameBoard Mock</div>);
+jest.mock('./UserPanel.jsx', () => () => <div>UserPanel Mock</div>);
+
+const mockStore = configureMockStore();
+const store = mockStore({});
+
+describe('Home Component', () => {
+    let navigate;
+
+    beforeEach(() => {
+        navigate = jest.fn();
+        require('react-router-dom').useNavigate.mockReturnValue(navigate);
+        render(
+            <Provider store={store}>
+                <Home />
+            </Provider>
+        );
+    });
+
+    afterEach(() => {
+        jest.clearAllMocks();
+    });
+
+    it('renders the Home component', () => {
+        expect(screen.getByPlaceholderText('ENTER YOUR USERNAME')).toBeInTheDocument();
+        expect(screen.getByPlaceholderText('ENTER A ROOM NAME')).toBeInTheDocument();
+        expect(screen.getByText('JOIN ROOM')).toBeInTheDocument();
+    });
+
+    it('updates username and roomName state on input change', () => {
+        const usernameInput = screen.getByPlaceholderText('ENTER YOUR USERNAME');
+        const roomNameInput = screen.getByPlaceholderText('ENTER A ROOM NAME');
+
+        fireEvent.change(usernameInput, { target: { value: 'testUser' } });
+        fireEvent.change(roomNameInput, { target: { value: 'testRoom' } });
+
+        expect(usernameInput.value).toBe('testUser');
+        expect(roomNameInput.value).toBe('testRoom');
+    });
+
+    it('shows an error toast if username or roomName is empty', () => {
+        const joinButton = screen.getByText('JOIN ROOM');
+        fireEvent.click(joinButton);
+
+        expect(toast.error).toHaveBeenCalledWith(
+            'Connexion: Please enter both username and room name.',
+            expect.any(Object)
+        );
+    });
+
+    it('shows an error toast if username or roomName contains non-alphanumeric characters', () => {
+        const usernameInput = screen.getByPlaceholderText('ENTER YOUR USERNAME');
+        const roomNameInput = screen.getByPlaceholderText('ENTER A ROOM NAME');
+        const joinButton = screen.getByText('JOIN ROOM');
+
+        fireEvent.change(usernameInput, { target: { value: 'test@User' } });
+        fireEvent.change(roomNameInput, { target: { value: 'testRoom' } });
+        fireEvent.click(joinButton);
+
+        expect(toast.error).toHaveBeenCalledWith(
+            'Connexion: Username and room name must be alphanumeric (only letters and numbers, no spaces or special characters).',
+            expect.any(Object)
+        );
+    });
+
+    it('navigates to the correct room if inputs are valid', () => {
+        const usernameInput = screen.getByPlaceholderText('ENTER YOUR USERNAME');
+        const roomNameInput = screen.getByPlaceholderText('ENTER A ROOM NAME');
+        const joinButton = screen.getByText('JOIN ROOM');
+
+        fireEvent.change(usernameInput, { target: { value: 'testUser' } });
+        fireEvent.change(roomNameInput, { target: { value: 'testRoom' } });
+        fireEvent.click(joinButton);
+
+        expect(navigate).toHaveBeenCalledWith('/testRoom/testUser');
+    });
+});
