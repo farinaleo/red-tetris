@@ -7,7 +7,6 @@ import { Provider } from 'react-redux';
 import Game from './Game';
 import { joinRoom } from '../store/actions';
 
-// Mock the actions
 jest.mock('../store/actions', () => ({
     joinRoom: jest.fn((roomName, username) => ({
         type: 'joinRoom',
@@ -27,7 +26,6 @@ jest.mock('react-router-dom', () => ({
 
 const navigate = useNavigate();
 
-// Mock the components that are causing issues
 jest.mock('./NextPiece.jsx', () => () => <div>NextPiece Mock</div>);
 jest.mock('./GameBoard.jsx', () => () => <div>GameBoard Mock</div>);
 jest.mock('./UserPanel.jsx', () => () => <div>UserPanel Mock</div>);
@@ -75,7 +73,6 @@ describe('Game', () => {
             </Provider>
         );
 
-        // Check if joinRoom was called with the correct parameters
         const actions = store.getActions();
         expect(actions[0].type).toEqual('joinRoom');
         expect(actions[0].payload).toEqual({roomName: 'general', username: 'anonymous'});
@@ -88,7 +85,6 @@ describe('Game', () => {
             </Provider>
         );
 
-        // Simulate key presses
         fireEvent.keyDown(window, { key: 'ArrowUp' });
         const actions = store.getActions();
         expect(actions.some(action => action.type === 'MOVE_PIECE' && action.payload.direction === 'ROTATE')).toBe(true);

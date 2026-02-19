@@ -7,24 +7,20 @@ import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import Home from './Home';
 
-// Mock react-router-dom's useNavigate
 jest.mock('react-router-dom', () => ({
     useNavigate: jest.fn(),
 }));
 
-// Mock react-toastify's toast
 jest.mock('react-toastify', () => ({
     toast: {
         error: jest.fn(),
     },
 }));
 
-// Mock child components
 jest.mock('./TopBar.jsx', () => () => <div>TopBar Mock</div>);
 jest.mock('./GameBoard.jsx', () => () => <div>GameBoard Mock</div>);
 jest.mock('./UserPanel.jsx', () => () => <div>UserPanel Mock</div>);
 
-// Configure mock store
 const mockStore = configureMockStore();
 const store = mockStore({});
 

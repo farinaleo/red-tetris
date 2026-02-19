@@ -1,7 +1,5 @@
 module.exports = {
-    // Configuration pour les tests côté serveur (Node.js)
     testEnvironment: "node",
-    // Configuration pour les tests côté client (JSDOM)
     projects: [
         {
             displayName: "server",
@@ -18,7 +16,6 @@ module.exports = {
             },
         },
     ],
-    // Génération de la couverture de code
     collectCoverage: true,
     coverageDirectory: "coverage",
     coverageReporters: ["text", "lcov"],
