@@ -11,7 +11,9 @@ jobs:
       - name: Install Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 25
+      - name: npm install
+        run: npm install
       - name: Install dependencies
         run: npm ci
       - name: Generate documentation
