@@ -3,6 +3,10 @@ import { useSelector, useDispatch } from 'react-redux';
 import './MasterButton.css';
 import { StartGame } from '../store/actions';
 
+/**
+ * @namspace Client
+ */
+
 const MasterButton = () => {
 
     const dispatch = useDispatch();

@@ -6,6 +6,9 @@ import Rules from "./Rules.jsx";
 import MasterButton from "./MasterButton.jsx"
 import spectrum from "./spectrumUtils.jsx"
 
+/**
+ * @namspace Client
+ */
 
 const UserPanel = () => {
 

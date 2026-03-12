@@ -1,3 +1,7 @@
+/**
+ * @namspace Client
+ */
+
 const GameStatus = {
     WAITING: 'Waiting...',
     PLAYING: "Playing",

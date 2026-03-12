@@ -4,6 +4,10 @@ import './Board.css';
 import Pieces from '../types/enums/pieces.jsx';
 import Colors from '../types/enums/colors.jsx';
 
+/**
+ * @namspace Client
+ */
+
 const Board = ({boardElements, isSpectrum=false}) => {
 
     /**

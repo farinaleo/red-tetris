@@ -3,6 +3,10 @@ import { useSelector, useDispatch } from 'react-redux';
 import './Spectrum.css';
 import Board from './Board.jsx'
 
+/**
+ * @namspace Client
+ */
+
 const Spectrum = ({username, boardElements}) => {
 
 

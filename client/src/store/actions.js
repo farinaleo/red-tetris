@@ -1,6 +1,10 @@
 // client/src/store/actions.js
 
 /**
+ * @namspace Client
+ */
+
+/**
  * Join a room.
  * @param roomName The game name.
  * @param username The username.

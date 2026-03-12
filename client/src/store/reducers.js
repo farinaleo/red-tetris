@@ -1,4 +1,9 @@
 // client/src/store/reducers.js
+
+/**
+ * @namspace Client
+ */
+
 const initialState = {
     roomName: '',
     username: '',

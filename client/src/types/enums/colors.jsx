@@ -1,3 +1,7 @@
+/**
+ * @namspace Client
+ */
+
 const Colors = {
     0 : "void-tile",
     1 : "o-tile",

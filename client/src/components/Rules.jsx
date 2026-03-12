@@ -2,6 +2,10 @@ import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import './Rules.css';
 
+/**
+ * @namspace Client
+ */
+
 const Rules = () => {
 
     return (

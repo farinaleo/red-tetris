@@ -5,6 +5,10 @@ import Board from './Board.jsx'
 import NextPiece from './NextPiece.jsx'
 import GameStatus from '../types/enums/gameStatus.jsx'
 
+/**
+ * @namspace Client
+ */
+
 const GameBoard = () => {
     const dispatch = useDispatch();
     const { game_status, next_piece, current_board } = useSelector((state) => state.game);

@@ -2,6 +2,10 @@ import io from 'socket.io-client';
 import { toast } from 'react-toastify';
 import StatusMessages from '../types/enums/StatusMessages.jsx';
 
+/**
+ * @namspace Client
+ */
+
 let socket;
 let socketStore;
 

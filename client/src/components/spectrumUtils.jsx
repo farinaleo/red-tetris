@@ -1,3 +1,7 @@
+/**
+ * @namspace Client
+ */
+
 const spectrum = (board) => {
     // Créer une copie du tableau pour éviter de modifier l'original
     const newBoard = [...board].map(element => element !== 0 ? 1 : 0);

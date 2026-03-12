@@ -8,6 +8,10 @@ import GameBoard from './GameBoard.jsx';
 import UserPanel from './UserPanel.jsx';
 import TopBar from './TopBar.jsx';
 
+/**
+ * @namspace Client
+ */
+
 const Home = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();

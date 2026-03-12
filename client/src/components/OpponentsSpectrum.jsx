@@ -3,6 +3,10 @@ import { useSelector, useDispatch } from 'react-redux';
 import './OpponentsSpectrum.css';
 import Spectrum from './Spectrum.jsx'
 
+/**
+ * @namspace Client
+ */
+
 const OpponentsSpectrum = ({opponents}) => {
 
     return (

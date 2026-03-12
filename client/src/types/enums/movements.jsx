@@ -1,3 +1,7 @@
+/**
+ * @namspace Client
+ */
+
 const Movements = {
     LEFT: 'LEFT',
     RIGHT: 'RIGHT',

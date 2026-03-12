@@ -8,6 +8,9 @@ import socketMiddleware from './store/socketMiddleware';
 import App from './App';
 import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 
+/**
+ * @namspace Client
+ */
 
 const AppWithNavigate = () => {
     const navigate = useNavigate();

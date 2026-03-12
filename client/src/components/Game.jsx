@@ -7,6 +7,10 @@ import UserPanel from './UserPanel.jsx';
 import TopBar from './TopBar.jsx';
 import Movements from '../types/enums/movements.jsx';
 
+/**
+ * @namspace Client
+ */
+
 const Game = () => {
 
     const dispatch = useDispatch();

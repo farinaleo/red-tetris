@@ -2,6 +2,10 @@ import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import './TopBar.css';
 
+/**
+ * @namspace Client
+ */
+
 const TopBar = ({username, roomName}) => {
 
     if (username.length === 0 || roomName.length === 0) {
