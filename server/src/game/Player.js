@@ -5,6 +5,10 @@ const {PlayerStatus} = require("../enums/PlayerStatus");
 const {PlayerEvents} = require("../enums/PlayerEvents");
 
 /**
+ * @namspace Server
+ */
+
+/**
  * Player class.
  */
 class Player {

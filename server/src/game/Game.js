@@ -7,6 +7,10 @@ const {PlayerEvents} = require("../enums/PlayerEvents");
 const {Movements, MovementsPositions} = require('../enums/Movements.js');
 
 /**
+ * @namspace Server
+ */
+
+/**
  * Main class, used to handle an entire game.
  */
 class Game {

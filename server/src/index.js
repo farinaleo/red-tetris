@@ -9,6 +9,9 @@ const path = require('path');
 const {PlayerEvents} = require("./enums/PlayerEvents");
 // require('dotenv').config();
 
+/**
+ * @namspace Server
+ */
 
 const app = express();
 const server = http.createServer(app);
