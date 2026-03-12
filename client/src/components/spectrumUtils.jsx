@@ -6,7 +6,7 @@
  * Correct a board to be displayed as required by the subject. Each column has
  * to be full.
  * @param board The original board.
- * @returns {(number)[]} The corrected board.
+ * @returns {list} The corrected board.
  */
 const spectrum = (board) => {
     // copy the current board to edit a nex element.
