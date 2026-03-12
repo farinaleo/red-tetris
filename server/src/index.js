@@ -105,7 +105,7 @@ io.on('connection', (socket) => {
         }
     });
 
-    // Handle disconnexion.
+    // Handle disconnection.
     socket.on('disconnect', () => {
         games.forEach((game, roomName) => {
             game.removePlayer(socket.id);
@@ -164,7 +164,7 @@ io.on('connection', (socket) => {
 
 
 
-// Démarrer le serveur
+// Start the server
 const PORT = process.env.SERVER_PORT;
 server.listen(PORT, '0.0.0.0', () => {
     console.log(`Server running on http://localhost:${PORT}`);
