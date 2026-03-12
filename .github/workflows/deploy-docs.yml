@@ -16,10 +16,21 @@ jobs:
         run: npm install
       - name: Install dependencies
         run: npm ci
+      - name: Get branch name
+        id: branch
+        run: |
+          BRANCH_NAME=${GITHUB_REF#refs/heads/}
+          echo "branch_name=$BRANCH_NAME" >> $GITHUB_OUTPUT
+
       - name: Generate documentation
-        run: npx jsdoc -c jsdoc.json
+        run: |
+          mkdir -p docs/${{ steps.branch.outputs.branch_name }}
+          npx jsdoc -c jsdoc.json -d docs/${{ steps.branch.outputs.branch_name }}
+
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./docs
+          publish_dir: docs/${{ steps.branch.outputs.branch_name }}
+          destination_dir: ${{ steps.branch.outputs.branch_name }}
+          keep_files: true 
