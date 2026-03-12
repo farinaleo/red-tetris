@@ -2,6 +2,9 @@
  * @namspace Client
  */
 
+/**
+ * Associate the movement type with its string version.
+ */
 const Movements = {
     LEFT: 'LEFT',
     RIGHT: 'RIGHT',

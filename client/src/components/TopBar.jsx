@@ -6,6 +6,14 @@ import './TopBar.css';
  * @namspace Client
  */
 
+/**
+ * Create the top bar element with the principal information. If the username
+ * nor room name are not provided, it rander a simple version of the top bar.
+ * @param username The current username.
+ * @param roomName The current room name.
+ * @returns {JSX.Element} The built element.
+ * @constructor
+ */
 const TopBar = ({username, roomName}) => {
 
     if (username.length === 0 || roomName.length === 0) {

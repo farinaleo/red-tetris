@@ -10,6 +10,12 @@ import spectrum from "./spectrumUtils.jsx"
  * @namspace Client
  */
 
+/**
+ * Create the user panel with the opponents spectrum, the rules and, if needed,
+ * the master button.
+ * @returns {JSX.Element} The built element.
+ * @constructor
+ */
 const UserPanel = () => {
 
     const dispatch = useDispatch();

@@ -9,6 +9,12 @@ import Colors from '../types/enums/colors.jsx';
  * @namspace Client
  */
 
+/**
+ * Create the element to display the next piece.
+ * @param pieceName The next piece name to show.
+ * @returns {JSX.Element} The built element.
+ * @constructor
+ */
 const NextPiece = ({pieceName}) => {
     const piece = Pieces[pieceName];
     useEffect(() => {

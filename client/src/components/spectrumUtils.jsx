@@ -2,8 +2,14 @@
  * @namspace Client
  */
 
+/**
+ * Correct a board to be displayed as required by the subject. Each column has
+ * to be full.
+ * @param board The original board.
+ * @returns {(number)[]} The corrected board.
+ */
 const spectrum = (board) => {
-    // Créer une copie du tableau pour éviter de modifier l'original
+    // copy the current board to edit a nex element.
     const newBoard = [...board].map(element => element !== 0 ? 1 : 0);
 
     const col_len = newBoard.length / 10;

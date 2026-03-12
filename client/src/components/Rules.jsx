@@ -6,6 +6,11 @@ import './Rules.css';
  * @namspace Client
  */
 
+/**
+ * Create the Rules list.
+ * @returns {JSX.Element} The built element.
+ * @constructor
+ */
 const Rules = () => {
 
     return (

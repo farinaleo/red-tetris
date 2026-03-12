@@ -12,6 +12,11 @@ import TopBar from './TopBar.jsx';
  * @namspace Client
  */
 
+/**
+ * Create the home interface to join a room.
+ * @returns {JSX.Element} The built element.
+ * @constructor
+ */
 const Home = () => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -20,7 +25,9 @@ const Home = () => {
     const isAlphanumeric = (str) => /^[a-zA-Z0-9]+$/.test(str);
 
 
-    // Check the inputs content and return an error or navigate to the right room.
+    /**
+     * Check the inputs content and return an error or navigate to the right room.
+     */
     const handleJoinRoom = () => {
         if (!username || !roomName) {
             toast.error(`Connexion: Please enter both username and room name.`, {

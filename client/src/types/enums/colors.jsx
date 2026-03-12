@@ -2,6 +2,9 @@
  * @namspace Client
  */
 
+/**
+ * Associate color tile id and the css class name.
+ */
 const Colors = {
     0 : "void-tile",
     1 : "o-tile",
