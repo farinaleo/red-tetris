@@ -19,9 +19,9 @@ import spectrum from "./spectrumUtils.jsx"
 const UserPanel = () => {
 
     const dispatch = useDispatch();
-    let { roomName, username, players = [] } = useSelector((state) => state.game);
+    const { roomName, username, players = [] } = useSelector((state) => state.game);
 
-    let opponents = players
+    const opponents = players
         .filter((player) => player.username !== username)
         .map((player) => [player.username, spectrum(player.board)]);
 
