@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: server/src/game/Piece.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: server/src/game/Piece.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>const {piecesArray, PiecesShapes} = require('../enums/Pieces.js');
+
+let lastPieceIndex = 0;
+const X_ORIGIN = 3;
+const Y_ORIGIN = 0;
+
+/**
+ * @namspace Server
+ */
+
+/**
+ * Class for game piece.
+ */
+class Piece {
+    /**
+     * Initialise the class with a specific index and select a random type.
+     * @param index The index to associate.
+     */
+    constructor(index) {
+        let randomIndex= 0;
+
+
+        // generate a random piece but different from the previous one.
+        do {
+            randomIndex = Math.floor(Math.random() * piecesArray.length);
+        } while (randomIndex === lastPieceIndex);
+
+        const selectedPiece = piecesArray[randomIndex];
+
+        this.index = index;
+        this.type = selectedPiece.type;
+        this.size = selectedPiece.size;
+        this.shape = PiecesShapes[this.type];
+        this.x = X_ORIGIN;
+        this.y = Y_ORIGIN;
+        this.rotation = 0;
+        this.hardDrop = false;
+        this.placedTime = null;
+
+        lastPieceIndex = randomIndex;
+    }
+
+    /**
+     * Duplicate properly the current piece.
+     * @returns {Piece}
+     */
+    copy() {
+        const pieceCopy = new Piece(this.index);
+        pieceCopy.type = this.type;
+        pieceCopy.size = this.size;
+        pieceCopy.shape = PiecesShapes[this.type];
+
+        return pieceCopy;
+    }
+
+    /**
+     * Update the piece coordinates
+     * @param x X position.
+     * @param y Y position.
+     * @param rotation Rotation to apply, 1 for a right rotation, -1 for a left.
+     */
+    updateCoordinates(x, y, rotation) {
+        this.x = x;
+        this.y = y;
+        this.rotation = (((this.rotation + rotation) % this.shape.length) + this.shape.length) % this.shape.length;
+    }
+
+    /**
+     * Get the piece shape matrix based on the rotation.
+     * @returns {*}
+     */
+    getShape() {
+        return this.shape[this.rotation];
+    }
+
+    /**
+     * Check if the piece is at its first position.
+     * @returns {boolean}
+     */
+    isAtOrigin() {
+        return this.x === X_ORIGIN &amp;&amp; this.y === Y_ORIGIN;
+    }
+
+    /**
+     * Initialise the placedTime to the current time.
+     */
+    setPlacedTime() {
+        if (this.placedTime === null) {
+            this.placedTime = Date.now();
+        }
+    }
+
+    /**
+     * Reset to null the placedTime.
+     */
+    resetPlacedTime() {
+        this.placedTime == null;
+    }
+
+    /**
+     * Check if the placedTime is set.
+     * @returns {boolean}
+     */
+    isPlaced() {
+        return this.placedTime !== null;
+    }
+
+    /**
+     * Check if the placedTime is expired.
+     * @returns {boolean}
+     */
+    isPlacedTimeExpired() {
+        return Date.now() - this.placedTime > 500;
+    }
+
+}
+
+module.exports = {Piece};</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Board.html">Board</a></li><li><a href="Game.html">Game</a></li><li><a href="GameBoard.html">GameBoard</a></li><li><a href="Home.html">Home</a></li><li><a href="MasterButton.html">MasterButton</a></li><li><a href="NextPiece.html">NextPiece</a></li><li><a href="OpponentsSpectrum.html">OpponentsSpectrum</a></li><li><a href="Piece.html">Piece</a></li><li><a href="Player.html">Player</a></li><li><a href="Rules.html">Rules</a></li><li><a href="Spectrum.html">Spectrum</a></li><li><a href="TopBar.html">TopBar</a></li><li><a href="UserPanel.html">UserPanel</a></li></ul><h3>Global</h3><ul><li><a href="global.html#App">App</a></li><li><a href="global.html#AppWithNavigate">AppWithNavigate</a></li><li><a href="global.html#Colors">Colors</a></li><li><a href="global.html#GameStatus">GameStatus</a></li><li><a href="global.html#Movements">Movements</a></li><li><a href="global.html#Pieces">Pieces</a></li><li><a href="global.html#StartGame">StartGame</a></li><li><a href="global.html#StatusMessages">StatusMessages</a></li><li><a href="global.html#app">app</a></li><li><a href="global.html#initialState">initialState</a></li><li><a href="global.html#isAlphanumeric">isAlphanumeric</a></li><li><a href="global.html#joinRoom">joinRoom</a></li><li><a href="global.html#movePiece">movePiece</a></li><li><a href="global.html#sendErrorNotification">sendErrorNotification</a></li><li><a href="global.html#sendErrorRedirection">sendErrorRedirection</a></li><li><a href="global.html#socket">socket</a></li><li><a href="global.html#spectrum">spectrum</a></li><li><a href="global.html#store">store</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Fri Mar 13 2026 13:14:19 GMT+0000 (Coordinated Universal Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
