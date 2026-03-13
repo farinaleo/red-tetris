@@ -11,7 +11,8 @@
     "build:client": "webpack --mode production",
     "start": "concurrently \"npm run start:server\" \"npm run start:client\"",
     "docker:up": "docker-compose up --build",
-    "docker:down": "docker-compose down"
+    "docker:down": "docker-compose down",
+    "linter:client": "eslint --config eslint.config.mjs client"
   },
   "repository": {
     "type": "git",
