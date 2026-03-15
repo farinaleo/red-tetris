@@ -1,10 +1,7 @@
-const {Player} = require('./Player.js');
 const {Piece} = require('./Piece.js');
 const {GameStatus} = require('../enums/GameStatus.js');
-const {piecesArray, PiecesShapes} = require("../enums/Pieces");
 const {PlayerStatus} = require("../enums/PlayerStatus");
-const {PlayerEvents} = require("../enums/PlayerEvents");
-const {Movements, MovementsPositions} = require('../enums/Movements.js');
+const {MovementsPositions} = require('../enums/Movements.js');
 
 /**
  * @namspace Server
@@ -325,7 +322,7 @@ class Game {
                         this.terminateGame(io);
                     }
 
-                } catch (error) {
+                } catch {
                     // Clean the current game correctly.
                     this.terminateGame(io, true);
                 }

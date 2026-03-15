@@ -94,7 +94,7 @@ class Piece {
      * Reset to null the placedTime.
      */
     resetPlacedTime() {
-        this.placedTime == null;
+        this.placedTime === null;
     }
 
     /**

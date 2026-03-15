@@ -1,8 +1,6 @@
-const {Piece} = require("./Piece");
 const {Tiles} = require("../enums/Tiles");
-const {Movements, MovementsPositions} = require("../enums/Movements");
+const { MovementsPositions} = require("../enums/Movements");
 const {PlayerStatus} = require("../enums/PlayerStatus");
-const {PlayerEvents} = require("../enums/PlayerEvents");
 
 /**
  * @namspace Server
@@ -23,7 +21,7 @@ class Player {
         this.socketId = socketId;
         this.isMaster = false;
         this.status = PlayerStatus.WAITING;
-        this.board = Array.from({ length: 10 * 20 }, (_, index) => Tiles.EMPTY);
+        this.board = Array.from({ length: 10 * 20 }, (_,) => Tiles.EMPTY);
         this.nextPiece = null;
         this.currentPiece = null;
         this.pieceId = 0;
@@ -38,7 +36,7 @@ class Player {
      */
     reset() {
         this.status = PlayerStatus.WAITING;
-        this.board = Array.from({ length: 10 * 20 }, (_, index) => Tiles.EMPTY);
+        this.board = Array.from({ length: 10 * 20 }, (_, ) => Tiles.EMPTY);
         this.nextPiece = null;
         this.currentPiece = null;
         this.pieceId = 0;
@@ -193,7 +191,7 @@ class Player {
         for (let y = 0; y < 20; y++) {
             if (this.isRowCompleted(this.board.slice(y * 10, (y + 1) * 10))) {
                 this.board = [
-                    ...Array.from({ length: 10 }, (_, index) => Tiles.EMPTY),
+                    ...Array.from({ length: 10 }, (_,) => Tiles.EMPTY),
                     ...this.board.slice(0, (y * 10)),
                     ...this.board.slice((y + 1) * 10, 10*20)
                 ]
@@ -220,7 +218,7 @@ class Player {
             if (!this.isRowBlocked(this.board.slice(y * 10, (y + 1) * 10))) {
                 this.board = [
                     ...this.board.slice(0, (y * 10)),
-                    ...Array.from({ length: 10 }, (_, index) => Tiles.BLOCKED),
+                    ...Array.from({ length: 10 }, (_,) => Tiles.BLOCKED),
                     ...this.board.slice((y + 1) * 10, 10*20)
                 ]
                 return;
@@ -266,7 +264,7 @@ class Player {
      * to indicate if the current piece has reach the bottom and the number of blocked rows.
      */
     moveCurrentPieceWrapper(direction) {
-        let event = {hasReachBottom: false, blockedRow: 0};
+        const event = {hasReachBottom: false, blockedRow: 0};
 
         // Only manage mvt when piece is not placed
         if (!this.needANewPeice) {

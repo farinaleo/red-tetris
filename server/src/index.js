@@ -1,12 +1,12 @@
 const {Game} = require('./game/Game.js');
 const {Player} = require('./game/Player.js');
+const {Tools} = require('./tools/Tools.js');
 const {GameStatus} = require('./enums/GameStatus.js');
 const {Movements, MovementsPositions} = require('./enums/Movements.js');
 const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io');
 const path = require('path');
-const {PlayerEvents} = require("./enums/PlayerEvents");
 // require('dotenv').config();
 
 /**
@@ -15,7 +15,6 @@ const {PlayerEvents} = require("./enums/PlayerEvents");
 
 const app = express();
 const server = http.createServer(app);
-const allowedOrigins = (process.env.CORS_ORIGINS || '').split(',');
 
 // INIT
 const io = socketIo(server, {
@@ -35,45 +34,14 @@ app.get(['/', '/home'], (req, res) => {
 
 // DEFINE NOTIFICATION FUNCTIONS
 
-/**
- * Send error notification to the appropriate channel.
- * @param io The socket io.
- * @param roomName The room name.
- * @param topic The error topic.
- * @param message The message.
- */
-function sendErrorNotification(io, roomName, topic, message) {
-    io.to(roomName).emit('notify_error', {topic:topic, message:message});
-}
-
-/**
- * Send error notification with redirection  to / to the appropriate channel.
- * @param io The socket io.
- * @param roomName The room name.
- * @param topic The error topic.
- * @param message The message.
- */
-function sendErrorRedirection(io, roomName, topic, message) {
-    io.to(roomName).emit('redirect_error', {topic:topic, message:message});
-}
-
-/**
- * Check if the given string is alphanumeric.
- * @param string The string to check.
- * @returns {boolean}
- */
-function isAlphanumeric(string) {
-    return /^[a-zA-Z0-9]+$/.test(string);
-}
-
 io.on('connection', (socket) => {
     console.log('Say hi to a new user !!');
 
     // Handle first connexion.
     socket.on('join', ({ roomName, username }) => {
         // Block connexion with bad username nor roomName
-        if (!isAlphanumeric(username) || !isAlphanumeric(roomName)) {
-            sendErrorRedirection(io, socket.id, 'Connexion', 'Username and room name must be alphanumeric (only letters and numbers, no spaces or special characters).');
+        if (!Tools.isAlphanumeric(username) || !Tools.isAlphanumeric(roomName)) {
+            Tools.sendErrorRedirection(io, socket.id, 'Connexion', 'Username and room name must be alphanumeric (only letters and numbers, no spaces or special characters).');
             return ;
         }
 
@@ -86,12 +54,12 @@ io.on('connection', (socket) => {
         // Block connexion if the username is taken.
         if (currentGame.usernameExists(username)) {
             console.log('error redirect username used');
-            sendErrorRedirection(io, socket.id, 'Connexion', 'Username already used.');
+            Tools.sendErrorRedirection(io, socket.id, 'Connexion', 'Username already used.');
             return ;
         // Block connexion if the game is running.
         } else if (currentGame.status === GameStatus.STARTED) {
             console.log('error game started...');
-            sendErrorRedirection(io, socket.id, 'Game', 'Cant join, the game is running.');
+            Tools.sendErrorRedirection(io, socket.id, 'Game', 'Cant join, the game is running.');
             return ;
         } else {
             // Join.
@@ -130,20 +98,20 @@ io.on('connection', (socket) => {
            if (currentGame.isMaster(socket.id)) {
                 const isGameLaunched = currentGame.launchGame();
                 if (!isGameLaunched) {
-                    sendErrorNotification(io, socket.id, 'Game Status', 'Game running.');
+                    Tools.sendErrorNotification(io, socket.id, 'Game Status', 'Game running.');
                 } else {
                     currentGame.sendGameStatus(io);
                     currentGame.gameLoop(io);
                 }
            } else {
-               sendErrorNotification(io, socket.id, 'Player status', 'You are not the master.')
+               Tools.sendErrorNotification(io, socket.id, 'Player status', 'You are not the master.')
            }
        }
     });
 
     // handle piece movements.
     socket.on('move_piece', ({movement}) =>{
-        games.forEach((game, roomName) => {
+        games.forEach((game, _) => {
            if (game.socketIdExists(socket.id)) {
                if (game.status === GameStatus.STARTED) {
                    const player = game.getPlayerBySocketId(socket.id);
