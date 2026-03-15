@@ -73,11 +73,11 @@ jobs:
           path: coverage/
 
       - name: Generate coverage badges
-        run: npx jest-coverage-badges --input coverage/coverage-summary.json --output badges
+        run: npx jest-coverage-badges --input coverage/coverage-summary.json --output docs/badges
 
       - name: Deploy badges to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./badges
+          publish_dir: ./docs
           keep_files: true
