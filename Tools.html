@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Class: Board</title>
+    <title>JSDoc: Class: Tools</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Class: Board</h1>
+    <h1 class="page-title">Class: Tools</h1>
 
     
 
@@ -28,7 +28,10 @@
 
 <header>
     
-        <h2><span class="attribs"><span class="type-signature"></span></span>Board<span class="signature">(boardElements, isSpectrum)</span><span class="type-signature"> &rarr; {JSX.Element}</span></h2>
+        <h2><span class="attribs"><span class="type-signature"></span></span>Tools<span class="signature">()</span><span class="type-signature"></span></h2>
+        
+            <div class="class-description">Simple class to manage common notification functions and
+string verifications.</div>
         
     
 </header>
@@ -39,87 +42,23 @@
         
 
     
-
-    
-    <h4 class="name" id="Board"><span class="type-signature"></span>new Board<span class="signature">(boardElements, isSpectrum)</span><span class="type-signature"> &rarr; {JSX.Element}</span></h4>
+    <h2>Constructor</h2>
     
 
     
-
-
-
-<div class="description">
-    Create the Board element used to show a given board.
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
+    <h4 class="name" id="Tools"><span class="type-signature"></span>new Tools<span class="signature">()</span><span class="type-signature"></span></h4>
     
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>boardElements</code></td>
-            
-
-            <td class="type">
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">All board elements from server.</td>
-        </tr>
 
     
 
-        <tr>
-            
-                <td class="name"><code>isSpectrum</code></td>
-            
 
-            <td class="type">
-            
-            </td>
 
-            
 
-            
 
-            <td class="description last">Has to be shown as a spectre, default false.</td>
-        </tr>
 
-    
-    </tbody>
-</table>
+
+
+
 
 
 
@@ -155,7 +94,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="client_src_components_Board.jsx.html">client/src/components/Board.jsx</a>, <a href="client_src_components_Board.jsx.html#line18">line 18</a>
+        <a href="server_src_tools_Tools.js.html">server/src/tools/Tools.js</a>, <a href="server_src_tools_Tools.js.html#line5">line 5</a>
     </li></ul></dd>
     
 
@@ -180,28 +119,6 @@
 
 
 
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    The built element.
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">JSX.Element</span>
-
-
-    </dd>
-</dl>
-
-    
 
 
 
@@ -233,7 +150,7 @@
     
 
     
-    <h4 class="name" id="~getBgClassName"><span class="type-signature">(inner) </span>getBgClassName<span class="signature">(index)</span><span class="type-signature"> &rarr; {string}</span></h4>
+    <h4 class="name" id=".isAlphanumeric"><span class="type-signature">(static) </span>isAlphanumeric<span class="signature">(string)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
     
 
     
@@ -241,7 +158,7 @@
 
 
 <div class="description">
-    Get the correct background css style for the given index.
+    Check if the given string is alphanumeric.
 </div>
 
 
@@ -277,7 +194,7 @@
 
         <tr>
             
-                <td class="name"><code>index</code></td>
+                <td class="name"><code>string</code></td>
             
 
             <td class="type">
@@ -288,7 +205,7 @@
 
             
 
-            <td class="description last">The tile index.</td>
+            <td class="description last">The string to check.</td>
         </tr>
 
     
@@ -329,7 +246,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="client_src_components_Board.jsx.html">client/src/components/Board.jsx</a>, <a href="client_src_components_Board.jsx.html#line25">line 25</a>
+        <a href="server_src_tools_Tools.js.html">server/src/tools/Tools.js</a>, <a href="server_src_tools_Tools.js.html#line37">line 37</a>
     </li></ul></dd>
     
 
@@ -357,10 +274,6 @@
 <h5>Returns:</h5>
 
         
-<div class="param-desc">
-    the selected class.
-</div>
-
 
 
 <dl>
@@ -369,7 +282,7 @@
     </dt>
     <dd>
         
-<span class="param-type">string</span>
+<span class="param-type">boolean</span>
 
 
     </dd>
@@ -387,7 +300,7 @@
     
 
     
-    <h4 class="name" id="~getClassName"><span class="type-signature">(inner) </span>getClassName<span class="signature">(element, index)</span><span class="type-signature"> &rarr; {string}</span></h4>
+    <h4 class="name" id=".sendErrorNotification"><span class="type-signature">(static) </span>sendErrorNotification<span class="signature">(io, roomName, topic, message)</span><span class="type-signature"></span></h4>
     
 
     
@@ -395,9 +308,7 @@
 
 
 <div class="description">
-    Get the correct css class for the given element.
-if the element is an empty tile, the function calls getBgClassName
-to form a checkerboard.
+    Send error notification to the appropriate channel.
 </div>
 
 
@@ -433,7 +344,7 @@ to form a checkerboard.
 
         <tr>
             
-                <td class="name"><code>element</code></td>
+                <td class="name"><code>io</code></td>
             
 
             <td class="type">
@@ -444,14 +355,14 @@ to form a checkerboard.
 
             
 
-            <td class="description last">The tile type.</td>
+            <td class="description last">The socket io.</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>index</code></td>
+                <td class="name"><code>roomName</code></td>
             
 
             <td class="type">
@@ -462,7 +373,43 @@ to form a checkerboard.
 
             
 
-            <td class="description last">The tile index.</td>
+            <td class="description last">The room name.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>topic</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The error topic.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>message</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The message.</td>
         </tr>
 
     
@@ -503,7 +450,7 @@ to form a checkerboard.
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="client_src_components_Board.jsx.html">client/src/components/Board.jsx</a>, <a href="client_src_components_Board.jsx.html#line51">line 51</a>
+        <a href="server_src_tools_Tools.js.html">server/src/tools/Tools.js</a>, <a href="server_src_tools_Tools.js.html#line17">line 17</a>
     </li></ul></dd>
     
 
@@ -528,28 +475,192 @@ to form a checkerboard.
 
 
 
-<h5>Returns:</h5>
+
+
+
+
 
         
-<div class="param-desc">
-    The selected class.
+            
+
+    
+
+    
+    <h4 class="name" id=".sendErrorRedirection"><span class="type-signature">(static) </span>sendErrorRedirection<span class="signature">(io, roomName, topic, message)</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    Send error notification with redirection  to / to the appropriate channel.
 </div>
 
 
 
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
         
-<span class="param-type">string</span>
+        <th>Name</th>
+        
 
+        <th>Type</th>
 
-    </dd>
-</dl>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>io</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The socket io.</td>
+        </tr>
 
     
+
+        <tr>
+            
+                <td class="name"><code>roomName</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The room name.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>topic</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The error topic.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>message</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The message.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="server_src_tools_Tools.js.html">server/src/tools/Tools.js</a>, <a href="server_src_tools_Tools.js.html#line28">line 28</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

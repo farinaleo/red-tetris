@@ -26,11 +26,9 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>const {Piece} = require("./Piece");
-const {Tiles} = require("../enums/Tiles");
-const {Movements, MovementsPositions} = require("../enums/Movements");
+            <pre class="prettyprint source linenums"><code>const {Tiles} = require("../enums/Tiles");
+const { MovementsPositions} = require("../enums/Movements");
 const {PlayerStatus} = require("../enums/PlayerStatus");
-const {PlayerEvents} = require("../enums/PlayerEvents");
 
 /**
  * @namspace Server
@@ -51,7 +49,7 @@ class Player {
         this.socketId = socketId;
         this.isMaster = false;
         this.status = PlayerStatus.WAITING;
-        this.board = Array.from({ length: 10 * 20 }, (_, index) => Tiles.EMPTY);
+        this.board = Array.from({ length: 10 * 20 }, (_,) => Tiles.EMPTY);
         this.nextPiece = null;
         this.currentPiece = null;
         this.pieceId = 0;
@@ -66,7 +64,7 @@ class Player {
      */
     reset() {
         this.status = PlayerStatus.WAITING;
-        this.board = Array.from({ length: 10 * 20 }, (_, index) => Tiles.EMPTY);
+        this.board = Array.from({ length: 10 * 20 }, (_, ) => Tiles.EMPTY);
         this.nextPiece = null;
         this.currentPiece = null;
         this.pieceId = 0;
@@ -221,7 +219,7 @@ class Player {
         for (let y = 0; y &lt; 20; y++) {
             if (this.isRowCompleted(this.board.slice(y * 10, (y + 1) * 10))) {
                 this.board = [
-                    ...Array.from({ length: 10 }, (_, index) => Tiles.EMPTY),
+                    ...Array.from({ length: 10 }, (_,) => Tiles.EMPTY),
                     ...this.board.slice(0, (y * 10)),
                     ...this.board.slice((y + 1) * 10, 10*20)
                 ]
@@ -248,7 +246,7 @@ class Player {
             if (!this.isRowBlocked(this.board.slice(y * 10, (y + 1) * 10))) {
                 this.board = [
                     ...this.board.slice(0, (y * 10)),
-                    ...Array.from({ length: 10 }, (_, index) => Tiles.BLOCKED),
+                    ...Array.from({ length: 10 }, (_,) => Tiles.BLOCKED),
                     ...this.board.slice((y + 1) * 10, 10*20)
                 ]
                 return;
@@ -294,7 +292,7 @@ class Player {
      * to indicate if the current piece has reach the bottom and the number of blocked rows.
      */
     moveCurrentPieceWrapper(direction) {
-        let event = {hasReachBottom: false, blockedRow: 0};
+        const event = {hasReachBottom: false, blockedRow: 0};
 
         // Only manage mvt when piece is not placed
         if (!this.needANewPeice) {
@@ -404,13 +402,13 @@ module.exports = {Player};</code></pre>
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Board.html">Board</a></li><li><a href="Game.html">Game</a></li><li><a href="GameBoard.html">GameBoard</a></li><li><a href="Home.html">Home</a></li><li><a href="MasterButton.html">MasterButton</a></li><li><a href="NextPiece.html">NextPiece</a></li><li><a href="OpponentsSpectrum.html">OpponentsSpectrum</a></li><li><a href="Piece.html">Piece</a></li><li><a href="Player.html">Player</a></li><li><a href="Rules.html">Rules</a></li><li><a href="Spectrum.html">Spectrum</a></li><li><a href="TopBar.html">TopBar</a></li><li><a href="UserPanel.html">UserPanel</a></li></ul><h3>Global</h3><ul><li><a href="global.html#App">App</a></li><li><a href="global.html#AppWithNavigate">AppWithNavigate</a></li><li><a href="global.html#Colors">Colors</a></li><li><a href="global.html#GameStatus">GameStatus</a></li><li><a href="global.html#Movements">Movements</a></li><li><a href="global.html#Pieces">Pieces</a></li><li><a href="global.html#StartGame">StartGame</a></li><li><a href="global.html#StatusMessages">StatusMessages</a></li><li><a href="global.html#app">app</a></li><li><a href="global.html#initialState">initialState</a></li><li><a href="global.html#isAlphanumeric">isAlphanumeric</a></li><li><a href="global.html#joinRoom">joinRoom</a></li><li><a href="global.html#movePiece">movePiece</a></li><li><a href="global.html#sendErrorNotification">sendErrorNotification</a></li><li><a href="global.html#sendErrorRedirection">sendErrorRedirection</a></li><li><a href="global.html#socket">socket</a></li><li><a href="global.html#spectrum">spectrum</a></li><li><a href="global.html#store">store</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Board.html">Board</a></li><li><a href="Game.html">Game</a></li><li><a href="GameBoard.html">GameBoard</a></li><li><a href="Home.html">Home</a></li><li><a href="MasterButton.html">MasterButton</a></li><li><a href="NextPiece.html">NextPiece</a></li><li><a href="OpponentsSpectrum.html">OpponentsSpectrum</a></li><li><a href="Piece.html">Piece</a></li><li><a href="Player.html">Player</a></li><li><a href="Rules.html">Rules</a></li><li><a href="Spectrum.html">Spectrum</a></li><li><a href="Tools.html">Tools</a></li><li><a href="TopBar.html">TopBar</a></li><li><a href="UserPanel.html">UserPanel</a></li></ul><h3>Global</h3><ul><li><a href="global.html#App">App</a></li><li><a href="global.html#AppWithNavigate">AppWithNavigate</a></li><li><a href="global.html#Colors">Colors</a></li><li><a href="global.html#GameStatus">GameStatus</a></li><li><a href="global.html#Movements">Movements</a></li><li><a href="global.html#Pieces">Pieces</a></li><li><a href="global.html#StartGame">StartGame</a></li><li><a href="global.html#StatusMessages">StatusMessages</a></li><li><a href="global.html#app">app</a></li><li><a href="global.html#initialState">initialState</a></li><li><a href="global.html#joinRoom">joinRoom</a></li><li><a href="global.html#movePiece">movePiece</a></li><li><a href="global.html#socket">socket</a></li><li><a href="global.html#spectrum">spectrum</a></li><li><a href="global.html#store">store</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Fri Mar 13 2026 13:14:19 GMT+0000 (Coordinated Universal Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Sun Mar 15 2026 14:57:08 GMT+0000 (Coordinated Universal Time)
 </footer>
 
 <script> prettyPrint(); </script>
