@@ -1,4 +1,8 @@
 # Red Tetris: Multiplayer Networked Tetris Game
+![test](./coverage/badge-branches.svg)
+![test](./coverage/badge-functions.svg)
+![test](./coverage/badge-lines.svg)
+![test](./coverage/badge-statements.svg)
 
 A **Full Stack JavaScript** implementation of the classic Tetris game, designed for multiplayer online play.
 Built with modern JavaScript frameworks and real-time networking.
