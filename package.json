@@ -12,7 +12,8 @@
     "start": "concurrently \"npm run start:server\" \"npm run start:client\"",
     "docker:up": "docker-compose up --build",
     "docker:down": "docker-compose down",
-    "linter:client": "eslint --config eslint.client.config.mjs client"
+    "linter:client": "eslint --config eslint.client.config.mjs client",
+    "linter:server": "eslint --config eslint.server.config.mjs server"
   },
   "repository": {
     "type": "git",
@@ -49,7 +50,7 @@
     "@babel/core": "^7.28.5",
     "@babel/preset-env": "^7.29.0",
     "@babel/preset-react": "^7.28.5",
-    "@eslint/js": "^10.0.1",
+    "eslint": "^9.0.0",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
     "@testing-library/user-event": "^14.6.1",
