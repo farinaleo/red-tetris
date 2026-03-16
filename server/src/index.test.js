@@ -131,6 +131,132 @@ describe('Socket.io Tests', () => {
         }, 10000);
     });
 
+    describe('Join Room Edge Cases', () => {
+        test('Should reject if username is already taken', (done) => {
+            const timeout = setTimeout(() => {
+                done.fail(new Error('Timed out'));
+            }, 5000);
+
+            clientSocket.emit('join', { roomName: 'RoomUserTaken', username: 'TakenUser' });
+
+            clientSocket.once('update_players', () => {
+                const clientSocket2 = ioClient(`http://localhost:${testPort}`);
+                clientSocket2.once('connect', () => {
+                    clientSocket2.emit('join', { roomName: 'RoomUserTaken', username: 'TakenUser' });
+                });
+                clientSocket2.on('redirect_error', (data) => {
+                    clearTimeout(timeout);
+                    expect(data.topic).toBe('Connexion');
+                    clientSocket2.disconnect();
+                    done();
+                });
+            });
+        }, 10000);
+
+        test('Should reject joining if game is already started', (done) => {
+            const timeout = setTimeout(() => {
+                done.fail(new Error('Timed out'));
+            }, 5000);
+            let started = false;
+
+            clientSocket.emit('join', { roomName: 'RoomGameRunning', username: 'HostPlayer' });
+
+            clientSocket.once('update_players', () => {
+                clientSocket.emit('start_game', { roomName: 'RoomGameRunning' });
+            });
+
+            clientSocket.on('game_status', (data) => {
+                if (data.status === 'STARTED' && !started) {
+                    started = true;
+                    const clientSocket2 = ioClient(`http://localhost:${testPort}`);
+                    clientSocket2.once('connect', () => {
+                        clientSocket2.emit('join', { roomName: 'RoomGameRunning', username: 'LateJoiner' });
+                    });
+                    clientSocket2.on('redirect_error', (data) => {
+                        clearTimeout(timeout);
+                        expect(data.topic).toBe('Game');
+                        clientSocket2.disconnect();
+                        done();
+                    });
+                }
+            });
+        }, 10000);
+    });
+
+    describe('Start Game Edge Cases', () => {
+        test('Should reject start_game if player is not master', (done) => {
+            const timeout = setTimeout(() => {
+                done.fail(new Error('Timed out'));
+            }, 5000);
+
+            clientSocket.emit('join', { roomName: 'RoomNotMasterTest', username: 'MasterPlayer' });
+
+            clientSocket.once('update_players', () => {
+                const clientSocket2 = ioClient(`http://localhost:${testPort}`);
+                clientSocket2.once('connect', () => {
+                    clientSocket2.emit('join', { roomName: 'RoomNotMasterTest', username: 'NonMaster' });
+                });
+                clientSocket2.once('update_players', () => {
+                    clientSocket2.emit('start_game', { roomName: 'RoomNotMasterTest' });
+                });
+                clientSocket2.on('notify_error', (data) => {
+                    clearTimeout(timeout);
+                    expect(data.topic).toBe('Player status');
+                    clientSocket2.disconnect();
+                    done();
+                });
+            });
+        }, 10000);
+    });
+
+    describe('Move Piece', () => {
+        test('Should handle regular piece movement', (done) => {
+            const timeout = setTimeout(() => {
+                done.fail(new Error('Timed out'));
+            }, 8000);
+            let boardCount = 0;
+
+            clientSocket.emit('join', { roomName: 'RoomMoveLeft', username: 'MoverPlayer' });
+
+            clientSocket.once('update_players', () => {
+                clientSocket.emit('start_game', { roomName: 'RoomMoveLeft' });
+            });
+
+            clientSocket.on('current_board', () => {
+                boardCount++;
+                if (boardCount === 1) {
+                    clientSocket.emit('move_piece', { movement: 'LEFT' });
+                } else if (boardCount === 2) {
+                    clearTimeout(timeout);
+                    done();
+                }
+            });
+        }, 10000);
+
+        test('Should handle fast drop movement', (done) => {
+            const timeout = setTimeout(() => {
+                done.fail(new Error('Timed out'));
+            }, 8000);
+            let boardCount = 0;
+
+            clientSocket.emit('join', { roomName: 'RoomMoveFastDown', username: 'DropPlayer' });
+
+            clientSocket.once('update_players', () => {
+                clientSocket.emit('start_game', { roomName: 'RoomMoveFastDown' });
+            });
+
+            clientSocket.on('current_board', () => {
+                boardCount++;
+                if (boardCount === 1) {
+                    clientSocket.emit('move_piece', { movement: 'FAST_DOWN' });
+                } else if (boardCount === 2) {
+                    clearTimeout(timeout);
+                    done();
+                }
+            });
+        }, 10000);
+    });
+
     describe('Disconnect', () => {
         test('Should remove player on disconnect', (done) => {
             const clientSocket2 = ioClient(`http://localhost:${testPort}`);

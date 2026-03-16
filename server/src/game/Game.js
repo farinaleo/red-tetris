@@ -33,6 +33,7 @@ class Game {
      */
     destroy() {
         clearInterval(this.gameInterval);
+        this.status = GameStatus.WAITING;
         this.gameInterval = null;
     }
 
@@ -254,6 +255,9 @@ class Game {
             player.sendCurrentBoard(io);
 
             // Block rows for others if the player win a row.
+            if (event.blockedRow > 0) {
+                player.addScore(event.blockedRow);
+            }
             for (let i = 0; i < event.blockedRow; i++) {
                 this.bockRowForOthersPlayers(player.username);
                 player.deleteACompletedRow();

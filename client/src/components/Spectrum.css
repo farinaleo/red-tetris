@@ -21,7 +21,14 @@ div.spectrum-game {
 
 div.spectrum-username {
     width: 100%;
-    height: 10%;
     text-align: center;
+    font-weight: bold;
+}
+
+div.spectrum-score {
+    width: 100%;
+    text-align: center;
+    font-size: 0.75rem;
+    color: #333;
 }
 
