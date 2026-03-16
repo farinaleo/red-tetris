@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
 import './Game.css';
 import './Home.css';
 import GameBoard from './GameBoard.jsx';
@@ -12,47 +10,51 @@ import TopBar from './TopBar.jsx';
  * @namspace Client
  */
 
+const NAME_MIN = 3;
+const NAME_MAX = 20;
+const NAME_REGEX = /^[a-zA-Z0-9]+$/;
+
+const validateName = (value) => {
+    if (!value) return 'This field is required.';
+    if (value.length < NAME_MIN) return `Minimum ${NAME_MIN} characters.`;
+    if (value.length > NAME_MAX) return `Maximum ${NAME_MAX} characters.`;
+    if (!NAME_REGEX.test(value)) return 'Only letters and numbers allowed (no spaces or special characters).';
+    return '';
+};
+
 /**
  * Create the home interface to join a room.
  * @returns {JSX.Element} The built element.
  * @constructor
  */
 const Home = () => {
-    const dispatch = useDispatch();
     const navigate = useNavigate();
     const [username, setUsername] = useState('');
     const [roomName, setRoomName] = useState('');
-    const isAlphanumeric = (str) => /^[a-zA-Z0-9]+$/.test(str);
+    const [usernameError, setUsernameError] = useState('');
+    const [roomNameError, setRoomNameError] = useState('');
 
+    const handleUsernameChange = (e) => {
+        const value = e.target.value;
+        setUsername(value);
+        setUsernameError(validateName(value));
+    };
+
+    const handleRoomNameChange = (e) => {
+        const value = e.target.value;
+        setRoomName(value);
+        setRoomNameError(validateName(value));
+    };
 
     /**
      * Check the inputs content and return an error or navigate to the right room.
      */
     const handleJoinRoom = () => {
-        if (!username || !roomName) {
-            toast.error(`Connexion: Please enter both username and room name.`, {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
-            return;
-        }
-        if (!isAlphanumeric(username) || !isAlphanumeric(roomName)) {
-            toast.error(`Connexion: Username and room name must be alphanumeric (only letters and numbers, no spaces or special characters).`, {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
-            return;
-        }
+        const uErr = validateName(username);
+        const rErr = validateName(roomName);
+        setUsernameError(uErr);
+        setRoomNameError(rErr);
+        if (uErr || rErr) return;
         navigate(`/${roomName}/${username}`);
     };
 
@@ -62,20 +64,28 @@ const Home = () => {
             <TopBar username={''} roomName={''} />
             <div className="home-wrapper">
                 <div className="join-form">
-                    <input
-                        type="text"
-                        placeholder="ENTER YOUR USERNAME"
-                        value={username}
-                        className='input-text'
-                        onChange={(e) => setUsername(e.target.value)}
-                    />
-                    <input
-                        type="text"
-                        placeholder="ENTER A ROOM NAME"
-                        value={roomName}
-                        className='input-text'
-                        onChange={(e) => setRoomName(e.target.value)}
-                    />
+                    <div className="field-wrapper">
+                        <input
+                            type="text"
+                            placeholder="ENTER YOUR USERNAME"
+                            value={username}
+                            className={`input-text${usernameError ? ' input-error' : ''}`}
+                            maxLength={NAME_MAX}
+                            onChange={handleUsernameChange}
+                        />
+                        {usernameError && <span className="field-error">{usernameError}</span>}
+                    </div>
+                    <div className="field-wrapper">
+                        <input
+                            type="text"
+                            placeholder="ENTER A ROOM NAME"
+                            value={roomName}
+                            className={`input-text${roomNameError ? ' input-error' : ''}`}
+                            maxLength={NAME_MAX}
+                            onChange={handleRoomNameChange}
+                        />
+                        {roomNameError && <span className="field-error">{roomNameError}</span>}
+                    </div>
                     <button className="join-button" onClick={handleJoinRoom}>JOIN ROOM</button>
                 </div>
             </div>

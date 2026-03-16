@@ -4,17 +4,10 @@ import '@testing-library/jest-dom';
 import { Provider } from 'react-redux';
 import configureMockStore from 'redux-mock-store';
 import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
 import Home from './Home';
 
 jest.mock('react-router-dom', () => ({
     useNavigate: jest.fn(),
-}));
-
-jest.mock('react-toastify', () => ({
-    toast: {
-        error: jest.fn(),
-    },
 }));
 
 jest.mock('./TopBar.jsx', () => () => <div>TopBar Mock</div>);
@@ -58,17 +51,14 @@ describe('Home Component', () => {
         expect(roomNameInput.value).toBe('testRoom');
     });
 
-    it('shows an error toast if username or roomName is empty', () => {
+    it('shows an inline error if username or roomName is empty', () => {
         const joinButton = screen.getByText('JOIN ROOM');
         fireEvent.click(joinButton);
 
-        expect(toast.error).toHaveBeenCalledWith(
-            'Connexion: Please enter both username and room name.',
-            expect.any(Object)
-        );
+        expect(screen.getAllByText('This field is required.').length).toBeGreaterThanOrEqual(1);
     });
 
-    it('shows an error toast if username or roomName contains non-alphanumeric characters', () => {
+    it('shows an inline error if username or roomName contains non-alphanumeric characters', () => {
         const usernameInput = screen.getByPlaceholderText('ENTER YOUR USERNAME');
         const roomNameInput = screen.getByPlaceholderText('ENTER A ROOM NAME');
         const joinButton = screen.getByText('JOIN ROOM');
@@ -77,10 +67,7 @@ describe('Home Component', () => {
         fireEvent.change(roomNameInput, { target: { value: 'testRoom' } });
         fireEvent.click(joinButton);
 
-        expect(toast.error).toHaveBeenCalledWith(
-            'Connexion: Username and room name must be alphanumeric (only letters and numbers, no spaces or special characters).',
-            expect.any(Object)
-        );
+        expect(screen.getByText('Only letters and numbers allowed (no spaces or special characters).')).toBeInTheDocument();
     });
 
     it('navigates to the correct room if inputs are valid', () => {

@@ -6,12 +6,13 @@ const path = require('path');
 
 let httpServer;
 let clientSocket;
+let testPort;
 
 beforeAll((done) => {
-    process.env.SERVER_PORT = 3004;
     process.env.CORS_ORIGINS = '*';
-    httpServer = server.listen(3004, () => {
-        console.log(`Test server running on http://localhost:3004`);
+    httpServer = server.listen(0, () => {
+        testPort = httpServer.address().port;
+        console.log(`Test server running on http://localhost:${testPort}`);
         done();
     });
 }, 10000);
@@ -41,7 +42,7 @@ describe('HTTP Routes', () => {
 
 describe('Socket.io Tests', () => {
     beforeEach((done) => {
-        clientSocket = ioClient('http://localhost:3004');
+        clientSocket = ioClient(`http://localhost:${testPort}`);
         clientSocket.on('connect', () => {
             done();
         });
@@ -132,7 +133,7 @@ describe('Socket.io Tests', () => {
 
     describe('Disconnect', () => {
         test('Should remove player on disconnect', (done) => {
-            const clientSocket2 = ioClient('http://localhost:3004');
+            const clientSocket2 = ioClient(`http://localhost:${testPort}`);
             const timeout = setTimeout(() => {
                 done.fail(new Error('Test timed out waiting for "update_players"'));
             }, 5000);

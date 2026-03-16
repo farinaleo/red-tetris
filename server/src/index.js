@@ -132,10 +132,12 @@ io.on('connection', (socket) => {
 
 
 
-// Start the server
-const PORT = process.env.SERVER_PORT;
-server.listen(PORT, '0.0.0.0', () => {
-    console.log(`Server running on http://localhost:${PORT}`);
-});
+// Start the server only when run directly (not when required by tests)
+if (require.main === module) {
+    const PORT = process.env.SERVER_PORT;
+    server.listen(PORT, '0.0.0.0', () => {
+        console.log(`Server running on http://localhost:${PORT}`);
+    });
+}
 
 module.exports = { app, server };
