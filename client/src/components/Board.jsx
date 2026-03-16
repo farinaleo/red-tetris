@@ -4,6 +4,17 @@ import './Board.css';
 import Pieces from '../types/enums/pieces.jsx';
 import Colors from '../types/enums/colors.jsx';
 
+/**
+ * @namspace Client
+ */
+
+/**
+ * Create the Board element used to show a given board.
+ * @param boardElements All board elements from server.
+ * @param isSpectrum Has to be shown as a spectre, default false.
+ * @returns {JSX.Element} The built element.
+ * @constructor
+ */
 const Board = ({boardElements, isSpectrum=false}) => {
 
     /**
@@ -50,7 +61,7 @@ const Board = ({boardElements, isSpectrum=false}) => {
           // } else {
             return `tile spectrum-gray`;
           // }
-        };
+        }
     };
 
     return (

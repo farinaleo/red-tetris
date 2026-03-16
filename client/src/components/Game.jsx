@@ -7,6 +7,15 @@ import UserPanel from './UserPanel.jsx';
 import TopBar from './TopBar.jsx';
 import Movements from '../types/enums/movements.jsx';
 
+/**
+ * @namspace Client
+ */
+
+/**
+ * Create the Game element containing all required elements.
+ * @returns {JSX.Element} The built element.
+ * @constructor
+ */
 const Game = () => {
 
     const dispatch = useDispatch();

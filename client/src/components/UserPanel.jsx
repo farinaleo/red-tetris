@@ -6,13 +6,22 @@ import Rules from "./Rules.jsx";
 import MasterButton from "./MasterButton.jsx"
 import spectrum from "./spectrumUtils.jsx"
 
+/**
+ * @namspace Client
+ */
 
+/**
+ * Create the user panel with the opponents spectrum, the rules and, if needed,
+ * the master button.
+ * @returns {JSX.Element} The built element.
+ * @constructor
+ */
 const UserPanel = () => {
 
     const dispatch = useDispatch();
-    let { roomName, username, players = [] } = useSelector((state) => state.game);
+    const { roomName, username, players = [] } = useSelector((state) => state.game);
 
-    let opponents = players
+    const opponents = players
         .filter((player) => player.username !== username)
         .map((player) => [player.username, spectrum(player.board)]);
 

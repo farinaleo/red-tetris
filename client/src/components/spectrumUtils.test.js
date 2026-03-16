@@ -3,7 +3,7 @@ import spectrum from "./spectrumUtils.jsx"
 
 describe('Spectrum utils functions', () => {
     it('test spectrum mode function', () => {
-        let board = [
+        const board = [
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -17,7 +17,7 @@ describe('Spectrum utils functions', () => {
             0, 0, 0, 0, 1, 0, 0, 0, 0, 0,
         ];
 
-        let board_result = [
+        const board_result = [
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0,

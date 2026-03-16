@@ -1,29 +1,33 @@
+/**
+ * @namspace Client
+ */
+
+/**
+ * Correct a board to be displayed as required by the subject. Each column has
+ * to be full.
+ * @param board The original board.
+ * @returns {list} The corrected board.
+ */
 const spectrum = (board) => {
-    // Créer une copie du tableau pour éviter de modifier l'original
     const newBoard = [...board].map(element => element !== 0 ? 1 : 0);
 
     const col_len = newBoard.length / 10;
     const row_len = 10;
 
-    for (let col = 0; col < row_len; col++) {
-        let colum = [];
-        for (let i = 0; i < col_len; i++) {
-            colum.push(newBoard[col + i * row_len]);
-        }
+    const correctedColumns = Array.from({ length: row_len }, (_, col) => {
+        const colum = Array.from({ length: col_len }, (_, i) => newBoard[col + i * row_len]);
 
-        if (colum.includes(1)) {
-            const index_premier_1 = colum.indexOf(1);
-            for (let j = index_premier_1 + 1; j < colum.length; j++) {
-                colum[j] = 1;
-            }
+        if (!colum.includes(1)) return colum;
 
-            for (let i = 0; i < col_len; i++) {
-                newBoard[col + i * row_len] = colum[i];
-            }
-        }
-    }
+        const index_premier_1 = colum.indexOf(1);
+        return colum.map((cell, j) => j >= index_premier_1 ? 1 : cell);
+    });
 
-    return newBoard;
+    return newBoard.map((_, idx) => {
+        const col = idx % row_len;
+        const row = Math.floor(idx / row_len);
+        return correctedColumns[col][row];
+    });
 };
 
 export default spectrum;

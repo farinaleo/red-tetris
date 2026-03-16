@@ -5,6 +5,10 @@ const X_ORIGIN = 3;
 const Y_ORIGIN = 0;
 
 /**
+ * @namspace Server
+ */
+
+/**
  * Class for game piece.
  */
 class Piece {
@@ -90,7 +94,7 @@ class Piece {
      * Reset to null the placedTime.
      */
     resetPlacedTime() {
-        this.placedTime == null;
+        this.placedTime === null;
     }
 
     /**

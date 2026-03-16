@@ -7,6 +7,9 @@ import Game from './components/Game.jsx'
 import Home from './components/Home.jsx'
 import './App.css'
 
+/**
+ * @namspace Client
+ */
 
 const App = () => {
 

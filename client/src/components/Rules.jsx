@@ -2,6 +2,15 @@ import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import './Rules.css';
 
+/**
+ * @namspace Client
+ */
+
+/**
+ * Create the Rules list.
+ * @returns {JSX.Element} The built element.
+ * @constructor
+ */
 const Rules = () => {
 
     return (

@@ -1,3 +1,10 @@
+/**
+ * @namspace Client
+ */
+
+/**
+ * Associate the piece name with its matrix representation.
+ */
 const Pieces = {
     O : [ 0, 1, 1, 0, 0, 1, 1, 0, ],
     I : [ 0, 0, 0, 0, 2, 2, 2, 2, ],

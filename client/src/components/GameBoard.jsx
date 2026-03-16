@@ -5,6 +5,15 @@ import Board from './Board.jsx'
 import NextPiece from './NextPiece.jsx'
 import GameStatus from '../types/enums/gameStatus.jsx'
 
+/**
+ * @namspace Client
+ */
+
+/**
+ * Create the payer board interface with the board and the next piece.
+ * @returns {JSX.Element} The built element.
+ * @constructor
+ */
 const GameBoard = () => {
     const dispatch = useDispatch();
     const { game_status, next_piece, current_board } = useSelector((state) => state.game);
