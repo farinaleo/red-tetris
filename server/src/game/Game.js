@@ -156,7 +156,7 @@ class Game {
      * @returns {boolean}
      */
     isGameFinished() {
-        if (!this.isMultyPLayers && this.players[0].status === PlayerStatus.LOST) {
+        if (!this.isMultyPlayers && this.players[0].status === PlayerStatus.LOST) {
             return true;
         } else if (this.isMultyPlayers) {
             const playingPlayers = this.players.filter(player => player.status === PlayerStatus.PLAYING);
