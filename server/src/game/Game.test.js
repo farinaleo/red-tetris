@@ -240,5 +240,42 @@ describe('Game', () => {
         expect(event.blockedRow).toBe(0);
     });
 
+    test('singlePlayerGameLogic adds score when lines are cleared', async () => {
+        const player = new Player('Léo', 'socket123');
+        player.status = PlayerStatus.PLAYING;
+        game.players.push(player);
+        game.initiatePlayers(ioMock);
+
+        jest.spyOn(player, 'moveCurrentPieceWrapper').mockReturnValue({ hasReachBottom: false, blockedRow: 2 });
+        jest.spyOn(player, 'deleteACompletedRow').mockImplementation(() => {});
+
+        await game.singlePlayerGameLogic(ioMock, player, false, { x: 0, y: 1, rotation: 0 });
+        expect(player.score).toBe(300);
+    });
+
+    test('singlePlayerGameLogic does not add score when no lines are cleared', async () => {
+        const player = new Player('Léo', 'socket123');
+        player.status = PlayerStatus.PLAYING;
+        game.players.push(player);
+        game.initiatePlayers(ioMock);
+
+        jest.spyOn(player, 'moveCurrentPieceWrapper').mockReturnValue({ hasReachBottom: false, blockedRow: 0 });
+
+        await game.singlePlayerGameLogic(ioMock, player, false, { x: 0, y: 1, rotation: 0 });
+        expect(player.score).toBe(0);
+    });
+
+    test('singlePlayerGameLogic adds score for 1 line via periodic movement', async () => {
+        const player = new Player('Léo', 'socket123');
+        player.status = PlayerStatus.PLAYING;
+        game.players.push(player);
+        game.initiatePlayers(ioMock);
+
+        jest.spyOn(player, 'periodicMovementDown').mockReturnValue({ hasReachBottom: false, blockedRow: 1 });
+        jest.spyOn(player, 'deleteACompletedRow').mockImplementation(() => {});
+
+        await game.singlePlayerGameLogic(ioMock, player, true, null);
+        expect(player.score).toBe(100);
+    });
 
 });

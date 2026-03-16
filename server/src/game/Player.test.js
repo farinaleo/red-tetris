@@ -256,4 +256,45 @@ describe('Player', () => {
         expect(ioMock.to).toHaveBeenCalledWith('socket123');
         expect(ioMock.emit).toHaveBeenCalledWith('next_piece', { piece: player.nextPiece });
     });
+
+    test('Constructor initializes score to 0', () => {
+        expect(player.score).toBe(0);
+    });
+
+    test('Reset resets score to 0', () => {
+        player.score = 500;
+        player.reset();
+        expect(player.score).toBe(0);
+    });
+
+    test('addScore adds 100 points for 1 line', () => {
+        player.addScore(1);
+        expect(player.score).toBe(100);
+    });
+
+    test('addScore adds 300 points for 2 lines', () => {
+        player.addScore(2);
+        expect(player.score).toBe(300);
+    });
+
+    test('addScore adds 500 points for 3 lines', () => {
+        player.addScore(3);
+        expect(player.score).toBe(500);
+    });
+
+    test('addScore adds 800 points for 4 lines', () => {
+        player.addScore(4);
+        expect(player.score).toBe(800);
+    });
+
+    test('addScore caps at 800 points for 5+ lines', () => {
+        player.addScore(5);
+        expect(player.score).toBe(800);
+    });
+
+    test('addScore accumulates score over multiple calls', () => {
+        player.addScore(1);
+        player.addScore(2);
+        expect(player.score).toBe(400);
+    });
 });
