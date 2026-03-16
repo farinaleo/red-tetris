@@ -7,7 +7,6 @@ const express = require('express');
 const http = require('http');
 const socketIo = require('socket.io');
 const path = require('path');
-// require('dotenv').config();
 
 /**
  * @namspace Server
@@ -35,8 +34,6 @@ app.get(['/', '/home'], (req, res) => {
 // DEFINE NOTIFICATION FUNCTIONS
 
 io.on('connection', (socket) => {
-    console.log('Say hi to a new user !!');
-
     // Handle first connexion.
     socket.on('join', ({ roomName, username }) => {
         // Block connexion with bad username nor roomName
@@ -53,12 +50,10 @@ io.on('connection', (socket) => {
 
         // Block connexion if the username is taken.
         if (currentGame.usernameExists(username)) {
-            console.log('error redirect username used');
             Tools.sendErrorRedirection(io, socket.id, 'Connexion', 'Username already used.');
             return ;
         // Block connexion if the game is running.
         } else if (currentGame.status === GameStatus.STARTED) {
-            console.log('error game started...');
             Tools.sendErrorRedirection(io, socket.id, 'Game', 'Cant join, the game is running.');
             return ;
         } else {
@@ -67,7 +62,6 @@ io.on('connection', (socket) => {
             currentGame.addPlayer(player);
             socket.join(roomName);
 
-            console.log(roomName + ' new user : ' + username);
             currentGame.sendUpdatedPlayersList(io);
             currentGame.sendGameStatus(io);
         }
@@ -75,23 +69,18 @@ io.on('connection', (socket) => {
 
     // Handle disconnection.
     socket.on('disconnect', () => {
-        games.forEach((game, roomName) => {
+        games.forEach((game) => {
             game.removePlayer(socket.id);
             game.sendUpdatedPlayersList(io);
-            console.log('Bye bye user see yoo later in ' + roomName);
 
             if (game.players.length === 0) {
                 game.destroy();
-                 console.log(games.delete(roomName));
-                console.log(`Room ${roomName} has been removed as it is now empty.`);
             }
         });
     });
 
     // Handle starting game.
     socket.on('start_game', ({roomName}) => {
-       console.log(socket.id + ' try to launch game ' + roomName);
-
        if (games.has(roomName)) {
            const currentGame = games.get(roomName);
            // Check if the player can launch the game.
@@ -135,9 +124,7 @@ io.on('connection', (socket) => {
 // Start the server only when run directly (not when required by tests)
 if (require.main === module) {
     const PORT = process.env.SERVER_PORT;
-    server.listen(PORT, '0.0.0.0', () => {
-        console.log(`Server running on http://localhost:${PORT}`);
-    });
+    server.listen(PORT, '0.0.0.0', () => {});
 }
 
 module.exports = { app, server };
