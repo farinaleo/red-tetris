@@ -27,9 +27,7 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
 import './Game.css';
 import './Home.css';
 import GameBoard from './GameBoard.jsx';
@@ -40,47 +38,51 @@ import TopBar from './TopBar.jsx';
  * @namspace Client
  */
 
+const NAME_MIN = 3;
+const NAME_MAX = 20;
+const NAME_REGEX = /^[a-zA-Z0-9]+$/;
+
+const validateName = (value) => {
+    if (!value) return 'This field is required.';
+    if (value.length &lt; NAME_MIN) return `Minimum ${NAME_MIN} characters.`;
+    if (value.length > NAME_MAX) return `Maximum ${NAME_MAX} characters.`;
+    if (!NAME_REGEX.test(value)) return 'Only letters and numbers allowed (no spaces or special characters).';
+    return '';
+};
+
 /**
  * Create the home interface to join a room.
  * @returns {JSX.Element} The built element.
  * @constructor
  */
 const Home = () => {
-    const dispatch = useDispatch();
     const navigate = useNavigate();
     const [username, setUsername] = useState('');
     const [roomName, setRoomName] = useState('');
-    const isAlphanumeric = (str) => /^[a-zA-Z0-9]+$/.test(str);
+    const [usernameError, setUsernameError] = useState('');
+    const [roomNameError, setRoomNameError] = useState('');
 
+    const handleUsernameChange = (e) => {
+        const value = e.target.value;
+        setUsername(value);
+        setUsernameError(validateName(value));
+    };
+
+    const handleRoomNameChange = (e) => {
+        const value = e.target.value;
+        setRoomName(value);
+        setRoomNameError(validateName(value));
+    };
 
     /**
      * Check the inputs content and return an error or navigate to the right room.
      */
     const handleJoinRoom = () => {
-        if (!username || !roomName) {
-            toast.error(`Connexion: Please enter both username and room name.`, {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
-            return;
-        }
-        if (!isAlphanumeric(username) || !isAlphanumeric(roomName)) {
-            toast.error(`Connexion: Username and room name must be alphanumeric (only letters and numbers, no spaces or special characters).`, {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-            });
-            return;
-        }
+        const uErr = validateName(username);
+        const rErr = validateName(roomName);
+        setUsernameError(uErr);
+        setRoomNameError(rErr);
+        if (uErr || rErr) return;
         navigate(`/${roomName}/${username}`);
     };
 
@@ -90,20 +92,28 @@ const Home = () => {
             &lt;TopBar username={''} roomName={''} />
             &lt;div className="home-wrapper">
                 &lt;div className="join-form">
-                    &lt;input
-                        type="text"
-                        placeholder="ENTER YOUR USERNAME"
-                        value={username}
-                        className='input-text'
-                        onChange={(e) => setUsername(e.target.value)}
-                    />
-                    &lt;input
-                        type="text"
-                        placeholder="ENTER A ROOM NAME"
-                        value={roomName}
-                        className='input-text'
-                        onChange={(e) => setRoomName(e.target.value)}
-                    />
+                    &lt;div className="field-wrapper">
+                        &lt;input
+                            type="text"
+                            placeholder="ENTER YOUR USERNAME"
+                            value={username}
+                            className={`input-text${usernameError ? ' input-error' : ''}`}
+                            maxLength={NAME_MAX}
+                            onChange={handleUsernameChange}
+                        />
+                        {usernameError &amp;&amp; &lt;span className="field-error">{usernameError}&lt;/span>}
+                    &lt;/div>
+                    &lt;div className="field-wrapper">
+                        &lt;input
+                            type="text"
+                            placeholder="ENTER A ROOM NAME"
+                            value={roomName}
+                            className={`input-text${roomNameError ? ' input-error' : ''}`}
+                            maxLength={NAME_MAX}
+                            onChange={handleRoomNameChange}
+                        />
+                        {roomNameError &amp;&amp; &lt;span className="field-error">{roomNameError}&lt;/span>}
+                    &lt;/div>
                     &lt;button className="join-button" onClick={handleJoinRoom}>JOIN ROOM&lt;/button>
                 &lt;/div>
             &lt;/div>
@@ -122,13 +132,13 @@ export default Home;
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Board.html">Board</a></li><li><a href="Game.html">Game</a></li><li><a href="GameBoard.html">GameBoard</a></li><li><a href="Home.html">Home</a></li><li><a href="MasterButton.html">MasterButton</a></li><li><a href="NextPiece.html">NextPiece</a></li><li><a href="OpponentsSpectrum.html">OpponentsSpectrum</a></li><li><a href="Piece.html">Piece</a></li><li><a href="Player.html">Player</a></li><li><a href="Rules.html">Rules</a></li><li><a href="Spectrum.html">Spectrum</a></li><li><a href="Tools.html">Tools</a></li><li><a href="TopBar.html">TopBar</a></li><li><a href="UserPanel.html">UserPanel</a></li></ul><h3>Global</h3><ul><li><a href="global.html#App">App</a></li><li><a href="global.html#AppWithNavigate">AppWithNavigate</a></li><li><a href="global.html#Colors">Colors</a></li><li><a href="global.html#GameStatus">GameStatus</a></li><li><a href="global.html#Movements">Movements</a></li><li><a href="global.html#Pieces">Pieces</a></li><li><a href="global.html#StartGame">StartGame</a></li><li><a href="global.html#StatusMessages">StatusMessages</a></li><li><a href="global.html#app">app</a></li><li><a href="global.html#initialState">initialState</a></li><li><a href="global.html#joinRoom">joinRoom</a></li><li><a href="global.html#movePiece">movePiece</a></li><li><a href="global.html#socket">socket</a></li><li><a href="global.html#spectrum">spectrum</a></li><li><a href="global.html#store">store</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Board.html">Board</a></li><li><a href="Game.html">Game</a></li><li><a href="GameBoard.html">GameBoard</a></li><li><a href="Home.html">Home</a></li><li><a href="MasterButton.html">MasterButton</a></li><li><a href="NextPiece.html">NextPiece</a></li><li><a href="OpponentsSpectrum.html">OpponentsSpectrum</a></li><li><a href="Piece.html">Piece</a></li><li><a href="Player.html">Player</a></li><li><a href="Rules.html">Rules</a></li><li><a href="Spectrum.html">Spectrum</a></li><li><a href="Tools.html">Tools</a></li><li><a href="TopBar.html">TopBar</a></li><li><a href="UserPanel.html">UserPanel</a></li></ul><h3>Global</h3><ul><li><a href="global.html#App">App</a></li><li><a href="global.html#AppWithNavigate">AppWithNavigate</a></li><li><a href="global.html#Colors">Colors</a></li><li><a href="global.html#GameStatus">GameStatus</a></li><li><a href="global.html#Movements">Movements</a></li><li><a href="global.html#NAME_MIN">NAME_MIN</a></li><li><a href="global.html#Pieces">Pieces</a></li><li><a href="global.html#StartGame">StartGame</a></li><li><a href="global.html#StatusMessages">StatusMessages</a></li><li><a href="global.html#app">app</a></li><li><a href="global.html#initialState">initialState</a></li><li><a href="global.html#joinRoom">joinRoom</a></li><li><a href="global.html#movePiece">movePiece</a></li><li><a href="global.html#socket">socket</a></li><li><a href="global.html#spectrum">spectrum</a></li><li><a href="global.html#store">store</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Mon Mar 16 2026 09:56:37 GMT+0000 (Coordinated Universal Time)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.5</a> on Mon Mar 16 2026 12:38:17 GMT+0000 (Coordinated Universal Time)
 </footer>
 
 <script> prettyPrint(); </script>
