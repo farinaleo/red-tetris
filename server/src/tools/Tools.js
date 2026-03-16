@@ -30,11 +30,13 @@ class Tools {
     }
 
     /**
-     * Check if the given string is alphanumeric.
+     * Check if the given string is a valid room/player name:
+     * alphanumeric only, between 3 and 20 characters.
      * @param string The string to check.
      * @returns {boolean}
      */
     static isAlphanumeric(string) {
+        if (!string || string.length < 3 || string.length > 20) return false;
         return /^[a-zA-Z0-9]+$/.test(string);
     }
 }
