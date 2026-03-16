@@ -33,6 +33,7 @@ class Game {
      */
     destroy() {
         clearInterval(this.gameInterval);
+        this.status = GameStatus.WAITING;
         this.gameInterval = null;
     }
 
