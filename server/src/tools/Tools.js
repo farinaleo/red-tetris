@@ -36,7 +36,10 @@ class Tools {
      * @returns {boolean}
      */
     static isAlphanumeric(string) {
-        if (!string || string.length < 3 || string.length > 20) return false;
+        if (!string || string.length < 3 || string.length > 20) {
+            return false;
+        }
+
         return /^[a-zA-Z0-9]+$/.test(string);
     }
 }
