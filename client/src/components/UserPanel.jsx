@@ -23,24 +23,26 @@ const UserPanel = () => {
 
     const opponents = players
         .filter((player) => player.username !== username)
-        .map((player) => [player.username, spectrum(player.board)]);
+        .map((player) => [player.username, spectrum(player.board), player.score || 0]);
 
     //Show the master button.
     const currentPlayer = players.find(player => player.username === username);
-    if (currentPlayer) {
-        if (currentPlayer.isMaster) {
-            return (
-                <div className="user-panel-container">
-                    <OpponentSpectrum opponents={opponents}/>
-                    <MasterButton />
-                    <Rules />
-                </div>
-            )
-        }
+    const currentScore = currentPlayer ? (currentPlayer.score || 0) : 0;
+
+    if (currentPlayer && currentPlayer.isMaster) {
+        return (
+            <div className="user-panel-container">
+                <div className="score-display">Score : {currentScore}</div>
+                <OpponentSpectrum opponents={opponents}/>
+                <MasterButton />
+                <Rules />
+            </div>
+        );
     }
 
     return (
         <div className="user-panel-container">
+            <div className="score-display">Score : {currentScore}</div>
             <OpponentSpectrum opponents={opponents}/>
             <Rules />
         </div>

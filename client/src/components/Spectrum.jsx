@@ -14,7 +14,7 @@ import Board from './Board.jsx'
  * @returns {JSX.Element} The built element.
  * @constructor
  */
-const Spectrum = ({username, boardElements}) => {
+const Spectrum = ({username, boardElements, score}) => {
 
 
     return (
@@ -23,6 +23,7 @@ const Spectrum = ({username, boardElements}) => {
                 <Board boardElements={boardElements} isSpectrum={true}/>
             </div>
             <div className="spectrum-username">{username}</div>
+            <div className="spectrum-score">{score || 0} pts</div>
         </div>
     );
 };

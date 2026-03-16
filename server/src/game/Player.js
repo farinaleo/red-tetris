@@ -29,6 +29,7 @@ class Player {
         this.updatedTime = null;
         this.needANewPiece = false;
         this.level = 0;
+        this.score = 0;
     }
 
     /**
@@ -44,6 +45,7 @@ class Player {
         this.updatedTime = null;
         this.needANewPiece = false;
         this.level = 0;
+        this.score = 0;
     }
 
     /**
@@ -361,6 +363,15 @@ class Player {
      */
     sendPlayerStatus(io) {
         io.to(this.socketId).emit('player_status', {status: this.status});
+    }
+
+    /**
+     * Add score based on the number of lines cleared at once.
+     * @param linesCleared Number of lines cleared simultaneously.
+     */
+    addScore(linesCleared) {
+        const points = [0, 100, 300, 500, 800];
+        this.score += points[Math.min(linesCleared, 4)];
     }
 }
 
