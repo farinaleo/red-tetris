@@ -15,13 +15,13 @@ module.exports = {
                 use: {
                     loader: 'babel-loader',
                     options: {
-                        configFile: './babel.config.json', // Chemin explicite vers la config
+                        configFile: './babel.config.json',
                     },
                 },
             },
             {
                 test: /\.css$/i,
-                use: ['style-loader', 'css-loader'], // Ajoute cette règle pour les fichiers CSS
+                use: ['style-loader', 'css-loader'],
             },
         ]
     },
@@ -30,13 +30,13 @@ module.exports = {
     },
     devServer: {
         static: {
-            directory: path.join(__dirname, 'client/public'), // Dossier contenant index.html
+            directory: path.join(__dirname, 'client/public'),
         },
         compress: true,
         port: 8080,
         hot: true,
         historyApiFallback: {
-            index: '/index.html', // Redirige toutes les requêtes vers index.html
+            index: '/index.html',
         },
     },
 };
