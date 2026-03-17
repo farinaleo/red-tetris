@@ -73,12 +73,13 @@ io.on('connection', (socket) => {
 
     // Handle disconnection.
     socket.on('disconnect', () => {
-        games.forEach((game) => {
+        games.forEach((game, roomName) => {
             game.removePlayer(socket.id);
             game.sendUpdatedPlayersList(io);
 
             if (game.players.length === 0) {
                 game.destroy();
+                games.delete(roomName);
             }
         });
     });
@@ -108,6 +109,7 @@ io.on('connection', (socket) => {
            if (game.socketIdExists(socket.id)) {
                if (game.status === GameStatus.STARTED) {
                    const player = game.getPlayerBySocketId(socket.id);
+                   if (!player) return;
 
                    // Manage simple movements from hard drop.
                     if (movement !== Movements.FAST_DOWN) {

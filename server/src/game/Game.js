@@ -157,11 +157,14 @@ class Game {
      * @returns {boolean}
      */
     isGameFinished() {
+        if (this.players.length === 0) {
+            return true;
+        }
         if (!this.isMultyPlayers && this.players[0].status === PlayerStatus.LOST) {
             return true;
         } else if (this.isMultyPlayers) {
             const playingPlayers = this.players.filter(player => player.status === PlayerStatus.PLAYING);
-            return playingPlayers.length === 1;
+            return playingPlayers.length <= 1;
         }
         return false;
     }
@@ -173,7 +176,9 @@ class Game {
     setTheWinner(io) {
         if (this.isMultyPlayers) {
             const winner = this.players.find(player => player.status === PlayerStatus.PLAYING);
-            winner.changeStatusAndNotify(PlayerStatus.WON, io);
+            if (winner) {
+                winner.changeStatusAndNotify(PlayerStatus.WON, io);
+            }
         }
     }
 
