@@ -9,8 +9,6 @@ services:
     volumes:
       - ./client:/app
       - /app/node_modules
-#    environment:
-#      - NODE_ENV=development
 
   server:
     build: ./server
@@ -20,5 +18,3 @@ services:
     volumes:
       - ./server:/app
       - /app/node_modules
-#    environment:
-#      - NODE_ENV=development
