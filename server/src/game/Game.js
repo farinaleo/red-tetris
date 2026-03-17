@@ -122,7 +122,7 @@ class Game {
      */
     isMaster(socketId) {
         const player = this.players.find(player => player.socketId === socketId);
-        return (player.isMaster);
+        return (player ? player.isMaster : false);
     }
 
     /**
