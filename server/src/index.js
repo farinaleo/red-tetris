@@ -109,7 +109,7 @@ io.on('connection', (socket) => {
            if (game.socketIdExists(socket.id)) {
                if (game.status === GameStatus.STARTED) {
                    const player = game.getPlayerBySocketId(socket.id);
-                   if (!player) return;
+                   if (!player) { return; }
 
                    // Manage simple movements from hard drop.
                     if (movement !== Movements.FAST_DOWN) {
