@@ -1,8 +1,4 @@
 # Red Tetris: Multiplayer Networked Tetris Game
-![test](./badges/badge-branches.svg)
-![test](./badges/badge-functions.svg)
-![test](./badges/badge-lines.svg)
-![test](./badges/badge-statements.svg)
 
 A **Full Stack JavaScript** implementation of the classic Tetris game, designed for multiplayer online play.
 Built with modern JavaScript frameworks and real-time networking.
@@ -21,3 +17,11 @@ The last player standing wins!
 - **Modern Tech Stack**: Built with **Node.js**, **React**, and **socket.io**.
 - **Functional & OOP**: Client uses functional programming; server uses object-oriented design.
 - **Testing**: 70%+ statement coverage, 50%+ branch coverage.
+
+---
+
+## Project management
+
+Project management is done using Jira.
+Project manager / Lead developer is Leo Farina and developer is Nolan Skiba.
+
