@@ -52,6 +52,10 @@ io.on('connection', (socket) => {
         if (currentGame.usernameExists(username)) {
             Tools.sendErrorRedirection(io, socket.id, 'Connexion', 'Username already used.');
             return ;
+        // Block connexion if the room is full.
+        } else if (currentGame.players.length >= 4) {
+            Tools.sendErrorRedirection(io, socket.id, 'Connexion', 'Room is full (max 4 players).');
+            return ;
         // Block connexion if the game is running.
         } else if (currentGame.status === GameStatus.STARTED) {
             Tools.sendErrorRedirection(io, socket.id, 'Game', 'Cant join, the game is running.');
